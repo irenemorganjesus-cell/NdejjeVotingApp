@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">NdejjeVotingApp</string>
+    <string name="register_title">Create Student Account</string>
+    <string name="reg_no_label">Registration Number</string>
+    <string name="register_button">Register Now</string>
+
+    <string name="login_title">Student Login</string>
+    <string name="login_button">Sign In</string>
+    <string name="password_label">Password / PIN</string>
+    <string name="forgot_password">Forgot Registration Details?</string>
+</resources>
