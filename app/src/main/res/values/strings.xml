@@ -1,11 +1,32 @@
 <resources>
     <string name="app_name">NdejjeVotingApp</string>
+
+    <string name="welcome_title">Ndejje University Digital Ballot</string>
+    <string name="welcome_subtitle">Your voice, your vote, your future.</string>
+
+    <string name="university_name">NDEJJE UNIVERSITY</string>
+    <string name="system_name">MOBILE VOTING SYSTEM</string>
+    <string name="motto">Your Vote. Your Voice. Our Future</string>
+    <string name="university_logo_description">Ndejje University Logo</string>
+
+    <string name="loading_text">Loading...</string>
+
     <string name="register_title">Create Student Account</string>
     <string name="reg_no_label">Registration Number</string>
     <string name="register_button">Register Now</string>
+    <string name="logo_description">University Logo</string>
 
     <string name="login_title">Student Login</string>
     <string name="login_button">Sign In</string>
     <string name="password_label">Password / PIN</string>
     <string name="forgot_password">Forgot Registration Details?</string>
+
+<!--Welcome Screen-->
+    <string name="welcome_to">Welcome to</string>
+    <string name="welcome_app_name">Ndejje University\nMobile Voting</string>
+    <string name="welcome_tagline">Safe • Secure • Transparent</string>
+    <string name="welcome_motto">Together, we build a better campus.</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_login">Login</string>
+    <string name="university_image_description">Ndejje University Building</string>
 </resources>

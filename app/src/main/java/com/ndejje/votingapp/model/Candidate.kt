@@ -4,8 +4,9 @@ import androidx.annotation.DrawableRes
 
 data class Candidate(
     val id: Int,
-    val name: String,
-    val position: String, // e.g., "Guild President"
-    @DrawableRes val image: Int, // The photo of the candidate
-    val voteCount: Int = 0
+    val fullName: String,
+    val position: String, // e.g., "Guild President" or "GRC"
+    val manifestoSummary: String,
+    @DrawableRes val imageRes: Int, // Link to the photo in res/drawable
+    var votes: Int = 0 //votes keep hanging
 )

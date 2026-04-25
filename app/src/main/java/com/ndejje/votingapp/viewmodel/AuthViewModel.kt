@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
-    // This will hold the "state" of the registration number globally
+    // holds the "state" of the registration number globally
     private val _studentRegNumber = MutableStateFlow("")
     val studentRegNumber: StateFlow<String> = _studentRegNumber
 
@@ -14,7 +14,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun performLogin(): Boolean {
-        // Here we would eventually check against a Database or API
+        //check against a Database
         return _studentRegNumber.value.isNotEmpty()
     }
 }

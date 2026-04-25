@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="padding_standard">16dp</dimen>
-    <dimen name="spacer_height">20dp</dimen>
+    <dimen name="spacer_height">24dp</dimen>
+
+    <dimen name="logo_size">200dp</dimen>
+
+    <dimen name="card_corner_radius">12dp</dimen>
+
+    <dimen name="logo_size_large">150dp</dimen>
+    <dimen name="indicator_stroke">4dp</dimen>
+
+    <dimen name="padding_standard_size">20dp</dimen>
+    <dimen name="padding_large">30dp</dimen>
+    <dimen name="loading_indicator_spacing">50dp</dimen>
+
+    <dimen name="font_size_title">34sp</dimen>
+    <dimen name="font_size_subtitle">24sp</dimen>
+    <dimen name="font_size_body">20sp</dimen>
+
+    <dimen name="logo_badge_size">160dp</dimen>
+    <dimen name="logo_inner_padding">16dp</dimen>
+    <dimen name="logo_border_thickness">2dp</dimen>
+
+<!--Welcome Screen-->
+    <dimen name="font_size_welcome">26sp</dimen>
+    <dimen name="font_size_app_title">37sp</dimen>
+    <dimen name="line_height">40sp</dimen>
+    <dimen name="faint_message_size">22sp</dimen>
+    <dimen name="together_message_size">18sp</dimen>
+    <dimen name="padding_standard">24dp</dimen>
+    <dimen name="university_img_height">280dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_corner_radius">12dp</dimen>
+    <dimen name="space_padding">40dp</dimen>
+    <dimen name="button_font_size">18sp</dimen>
+    <dimen name="border_width">1dp</dimen>
+    <dimen name="image_elevation">8dp</dimen>
+    <dimen name="image_edge_margin">0dp</dimen>
+    <dimen name="text_line_spacing">4dp</dimen>
+    <dimen name="shadow_elevation">12dp</dimen>
 </resources>
