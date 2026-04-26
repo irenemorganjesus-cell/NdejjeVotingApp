@@ -21,7 +21,7 @@
     <string name="password_label">Password / PIN</string>
     <string name="forgot_password">Forgot Registration Details?</string>
 
-<!--Welcome Screen-->
+    <!--Welcome Screen-->
     <string name="welcome_to">Welcome to</string>
     <string name="welcome_app_name">Ndejje University\nMobile Voting</string>
     <string name="welcome_tagline">Safe • Secure • Transparent</string>
@@ -29,4 +29,17 @@
     <string name="btn_register">Register</string>
     <string name="btn_login">Login</string>
     <string name="university_image_description">Ndejje University Building</string>
+
+    <!--Login Screen-->
+    <string name="login_welcome">Welcome Back</string>
+    <string name="login_subtitle">Login to access your voting account</string>
+    <string name="label_reg_no">Registration Number</string>
+    <string name="placeholder_reg_no">e.g. 25/2/303/D/001</string>
+    <string name="label_password">Password</string>
+    <string name="link_forgot_password">Forgot Password?</string>
+    <string name="divider_text">or continue with</string>
+    <string name="btn_google_login">Continue with university email</string>
+    <string name="footer_no_account">Don\'t have an account?</string>
+    <string name="placeholder_pass">************</string>
+
 </resources>

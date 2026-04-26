@@ -10,7 +10,7 @@
     <dimen name="indicator_stroke">4dp</dimen>
 
     <dimen name="padding_standard_size">20dp</dimen>
-    <dimen name="padding_large">30dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
     <dimen name="loading_indicator_spacing">50dp</dimen>
 
     <dimen name="font_size_title">34sp</dimen>
@@ -34,8 +34,16 @@
     <dimen name="space_padding">40dp</dimen>
     <dimen name="button_font_size">18sp</dimen>
     <dimen name="border_width">1dp</dimen>
-    <dimen name="image_elevation">8dp</dimen>
-    <dimen name="image_edge_margin">0dp</dimen>
-    <dimen name="text_line_spacing">4dp</dimen>
-    <dimen name="shadow_elevation">12dp</dimen>
+
+<!--Login Screen-->
+    <dimen name="logo_size_small">80dp</dimen>
+    <dimen name="login_field_spacing">16dp</dimen>
+    <dimen name="google_icon_size">24dp</dimen>
+    <dimen name="pass_holder_size">14sp</dimen>
+    <dimen name="padding_forgot">8dp</dimen>
+    <dimen name="continue_size">12sp</dimen>
+    <dimen name="footer_space">16dp</dimen>
+
+
+
 </resources>
