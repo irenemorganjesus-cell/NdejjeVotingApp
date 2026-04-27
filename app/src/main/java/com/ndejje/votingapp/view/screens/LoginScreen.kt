@@ -44,14 +44,14 @@ fun LoginScreen(navController: NavController) {
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
 
-        // 1. Small University Logo
+        //Small University Logo
         Image(
             painter = painterResource(id = R.drawable.university_logo),
             contentDescription = stringResource(R.string.logo_description),
             modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
         )
 
-        // 2. Welcome Header
+        //Welcome Header
         Text(
             text = stringResource(R.string.login_welcome),
             fontSize = dimensionResource(R.dimen.font_size_title).value.sp,
@@ -67,7 +67,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
 
-        // 3. Registration Number Field
+        //Registration Number Field
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(R.string.label_reg_no), fontWeight = FontWeight.Medium)
             OutlinedTextField(
@@ -81,7 +81,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.login_field_spacing)))
 
-        // 4. Password Field
+        //Password Field
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(R.string.label_password), fontWeight = FontWeight.Medium)
             OutlinedTextField(
@@ -102,7 +102,7 @@ fun LoginScreen(navController: NavController) {
             )
         }
 
-        // 5. Forgot Password link
+        //Forgot Password link
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
             Text(
                 text = stringResource(R.string.link_forgot_password),
@@ -116,7 +116,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_standard)))
 
-        // 6. Login Button
+        //Login Button
         Button(
             onClick = { /* Logic for DB check later */ },
             modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
@@ -128,7 +128,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacer_height)))
 
-        // 7. Divider
+        //Divider
         Row(verticalAlignment = Alignment.CenterVertically) {
             HorizontalDivider(modifier = Modifier.weight(LayoutWeights.StandardWeight), thickness = 1.dp, color = Color.LightGray)
             Text(
@@ -142,7 +142,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacer_height)))
 
-        // 8. Google Login Button
+        //Google Login Button
         OutlinedButton(
             onClick = { /* Handle Google Login */ },
             modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
@@ -162,7 +162,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.weight(LayoutWeights.StandardWeight))
 
-        // 9. Footer: Link to Register
+        //Footer: Link to Register
         Row {
             Text(text = stringResource(R.string.footer_no_account), color = Color.Gray)
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.indicator_stroke)))

@@ -11,7 +11,6 @@
 
     <string name="loading_text">Loading...</string>
 
-    <string name="register_title">Create Student Account</string>
     <string name="reg_no_label">Registration Number</string>
     <string name="register_button">Register Now</string>
     <string name="logo_description">University Logo</string>
@@ -41,5 +40,17 @@
     <string name="btn_google_login">Continue with university email</string>
     <string name="footer_no_account">Don\'t have an account?</string>
     <string name="placeholder_pass">************</string>
+
+    <!--Register screen-->
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Register to participate in elections</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="placeholder_full_name">e.g. Ssenono Francis</string>
+    <string name="label_course">Course</string>
+    <string name="placeholder_course">Select your course</string>
+    <string name="label_confirm_password">Confirm Password</string>
+    <string name="agree_terms">I agree to the Terms &amp; Conditions</string>
+    <string name="footer_have_account">Already have an account?</string>
+    <string name="btn_sign_up">Sign Up</string>
 
 </resources>
