@@ -35,25 +35,31 @@ fun VotingNavGraph() {
 
     // 3. SEED DATA LOGIC
     // This populates the DB with the candidates from the "vote.png" design
+    // Inside NavGraph.kt -> LaunchedEffect(Unit)
     LaunchedEffect(Unit) {
-        // Inside NavGraph.kt -> LaunchedEffect(Unit)
-        val sampleCandidates = listOf(
-            // Guild President Section
-            CandidateEntity(name = "Kato Brian", position = "Guild President", course = "BSc. Computer Science", motto = "Leadership for Unity", imageUrl = "", partyName = "PSF"),
-            CandidateEntity(name = "Namirembe Faith", position = "Guild President", course = "BBA", motto = "Your Voice, Our Responsibility", imageUrl = "", partyName = "UA"),
-            CandidateEntity(name = "Mugisha Ivan", position = "Guild President", course = "BEd. Science", motto = "Together We Build", imageUrl = "", partyName = "IND"),
+        // 1. Check if the database is already populated
+        val existingCandidates = candidateRepository.getCandidatesByPosition("Guild President")
 
-            // Guild Speaker Section
-            CandidateEntity(name = "Orombi Allan", position = "Guild Speaker", course = "BIT", motto = "Order and Progress", imageUrl = "", partyName = "PSF"),
-            CandidateEntity(name = "Nakku Annet", position = "Guild Speaker", course = "BSc. Engineering", motto = "The Voice of Reason", imageUrl = "", partyName = "UA"),
-            CandidateEntity(name = "Zzimula Ambrose", position = "Guild Speaker", course = "B. Law", motto = "Justice for All", imageUrl = "", partyName = "IND"),
+        // 2. Only insert if the list is empty
+        if (existingCandidates.isEmpty()) {
+            val sampleCandidates = listOf(
+                // Guild President Section
+                CandidateEntity(name = "Kato Brian", position = "Guild President", course = "BSc. Computer Science", motto = "Leadership for Unity", imageUrl = "", partyName = "PSF"),
+                CandidateEntity(name = "Namirembe Faith", position = "Guild President", course = "BBA", motto = "Your Voice, Our Responsibility", imageUrl = "", partyName = "UA"),
+                CandidateEntity(name = "Mugisha Ivan", position = "Guild President", course = "BEd. Science", motto = "Together We Build", imageUrl = "", partyName = "IND"),
 
-            // GRC Section
-            CandidateEntity(name = "Nalugwa Annet", position = "GRC", course = "BIT", motto = "Innovation in Representation", imageUrl = "", partyName = "PSF"),
-            CandidateEntity(name = "Namuyimba Mathias", position = "GRC", course = "BIT", motto = "Lead with Action", imageUrl = "", partyName = "UA"),
-            CandidateEntity(name = "Nakalyango Florence", position = "GRC", course = "B. Nursing", motto = "Service Above Self", imageUrl = "", partyName = "IND")
-        )
-        candidateRepository.insertInitialCandidates(sampleCandidates)
+                // Guild Speaker Section
+                CandidateEntity(name = "Aksam Kalungi", position = "Guild Speaker", course = "BIT", motto = "Order and Progress", imageUrl = "", partyName = "PSF"),
+                CandidateEntity(name = "Irene Namanda", position = "Guild Speaker", course = "BSc. Engineering", motto = "The Voice of Reason", imageUrl = "", partyName = "UA"),
+                CandidateEntity(name = "Muhammad Muyanja", position = "Guild Speaker", course = "B. Law", motto = "Justice for All", imageUrl = "", partyName = "IND"),
+
+                // GRC Section
+                CandidateEntity(name = "Sharifah Namaganda", position = "GRC", course = "BIT", motto = "Innovation in Representation", imageUrl = "", partyName = "PSF"),
+                CandidateEntity(name = "Xavier Ssenono", position = "GRC", course = "BIT", motto = "Lead with Action", imageUrl = "", partyName = "UA"),
+                CandidateEntity(name = "Ndejje Student", position = "GRC", course = "B. Nursing", motto = "Service Above Self", imageUrl = "", partyName = "IND")
+            )
+            candidateRepository.insertInitialCandidates(sampleCandidates)
+        }
     }
 
     // 4. Navigation Routes
