@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun HomeScreen(navController: NavController, userName: String) {
+    // Defined colors based on your branding requirements
     val ndejjeDarkBlue = Color(0xFF001F3F)
     val lightBlueHeader = Color(0xFFE3F2FD)
     val pearlWhite = Color(0xFFF5F5F5)
@@ -36,7 +37,7 @@ fun HomeScreen(navController: NavController, userName: String) {
                 .padding(padding)
                 .background(Color.White)
         ) {
-            // --- HEADER SECTION ---
+            // --- HEADER SECTION (Light Blue) ---
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,7 +64,7 @@ fun HomeScreen(navController: NavController, userName: String) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Election Banner
+                // Election Banner (Dark Blue)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
@@ -82,7 +83,7 @@ fun HomeScreen(navController: NavController, userName: String) {
                 }
             }
 
-            // --- QUICK ACTIONS ---
+            // --- QUICK ACTIONS SECTION ---
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Quick Actions", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = ndejjeDarkBlue)
                 Spacer(modifier = Modifier.height(12.dp))
@@ -92,16 +93,16 @@ fun HomeScreen(navController: NavController, userName: String) {
                         navController.navigate("vote")
                     }
                     QuickActionCard("Results", "View live results", Icons.Default.BarChart, Modifier.weight(1f), ndejjeDarkBlue) {
-                        // Results path
+                        // Results navigation logic
                     }
                     QuickActionCard("Profile", "My information", Icons.Default.Person, Modifier.weight(1f), ndejjeDarkBlue) {
-                        // Profile path
+                        // Profile navigation logic
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Election Status Section
+                // Election Status Box
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -120,11 +121,19 @@ fun HomeScreen(navController: NavController, userName: String) {
 
 @Composable
 fun QuickActionCard(title: String, subtitle: String, icon: ImageVector, modifier: Modifier, darkBlue: Color, onClick: () -> Unit) {
+    // State to toggle background color to dark blue on click
+    var isSelected by remember { mutableStateOf(false) }
+
     Card(
         modifier = modifier
             .height(130.dp)
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+            .clickable {
+                isSelected = !isSelected
+                onClick()
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) darkBlue else Color(0xFFF5F5F5)
+        ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
@@ -133,10 +142,25 @@ fun QuickActionCard(title: String, subtitle: String, icon: ImageVector, modifier
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(icon, contentDescription = null, tint = darkBlue, modifier = Modifier.size(32.dp))
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = if (isSelected) Color.White else darkBlue,
+                modifier = Modifier.size(32.dp)
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = darkBlue)
-            Text(subtitle, fontSize = 10.sp, textAlign = TextAlign.Center, color = Color.Gray)
+            Text(
+                title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = if (isSelected) Color.White else darkBlue
+            )
+            Text(
+                subtitle,
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                color = if (isSelected) Color.LightGray else Color.Gray
+            )
         }
     }
 }
