@@ -8,9 +8,10 @@ data class CandidateEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    val position: String, // e.g., "Guild President", "GRC - IT"
-    val partyName: String,
-    val manifesto: String,
-    val imageUrl: String, // Path to their profile picture
+    val position: String,
+    val partyName: String, // This can stay for internal records
+    val course: String,    // New: e.g., "BSc. Computer Science"
+    val motto: String,     // New: e.g., "Together We Build"
+    val imageUrl: String,
     val voteCount: Int = 0
 )
