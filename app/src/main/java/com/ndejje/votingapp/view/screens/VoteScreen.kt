@@ -32,8 +32,6 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
     val candidates by viewModel.candidates.collectAsState()
     var selectedPosition by remember { mutableStateOf("Guild President") }
     var selectedCandidateId by remember { mutableStateOf<Int?>(null) }
-
-    // Updated brand color: Ndejje Dark Blue
     val ndejjeDarkBlue = Color(0xFF001F3F)
 
     Scaffold(
@@ -41,16 +39,13 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
             CenterAlignedTopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Cast Your Vote", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        Text("Select your preferred in elections", fontSize = 12.sp, color = Color.Gray)
+                        Text("Cast Your Vote", fontWeight = FontWeight.Bold, fontSize = 24.sp) // Increased
+                        Text("Select your preferred in elections", fontSize = 14.sp, color = Color.Gray) // Increased
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        // Logout logic: Clears the backstack so the user cannot back into the app
-                        navController.navigate("login") { popUpTo(0) }
-                    }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Logout")
+                    IconButton(onClick = { navController.navigate("login") { popUpTo(0) } }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Logout", modifier = Modifier.size(28.dp))
                     }
                 }
             )
@@ -58,13 +53,11 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize().padding(horizontal = 16.dp)) {
 
-            // 1. Position Selection Tabs (Now in Dark Blue)
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val positions = listOf("Guild President", "Guild Speaker", "GRC")
-                positions.forEach { pos ->
+                listOf("Guild President", "Guild Speaker", "GRC").forEach { pos ->
                     val isSelected = selectedPosition == pos
                     Button(
                         onClick = {
@@ -76,30 +69,27 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                             containerColor = if (isSelected) ndejjeDarkBlue else Color(0xFFF1F1F1),
                             contentColor = if (isSelected) Color.White else Color.Black
                         ),
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        contentPadding = PaddingValues(0.dp)
+                        modifier = Modifier.weight(1f).height(48.dp), // Taller buttons
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(pos, fontSize = 11.sp)
+                        Text(pos, fontSize = 12.sp, fontWeight = FontWeight.Bold) // Increased & Bold
                     }
                 }
             }
 
-            // 2. Section Divider
-            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), contentAlignment = Alignment.Center) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.LightGray)
                 Text(
                     "Select ONE candidate",
-                    modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(horizontal = 8.dp),
-                    fontSize = 12.sp,
-                    color = Color.Gray
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(horizontal = 12.dp),
+                    fontSize = 15.sp, // Increased
+                    color = Color.DarkGray
                 )
             }
 
-            // 3. Candidates List (Rounded Rectangles as per vote.png)
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(bottom = 16.dp)
             ) {
                 items(candidates) { candidate ->
@@ -107,30 +97,29 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                         candidate = candidate,
                         isSelected = selectedCandidateId == candidate.id,
                         ndejjeDarkBlue = ndejjeDarkBlue,
-                        onSelect = { selectedCandidateId = candidate.id }
+                        onSelect = {
+                            // UNCHECK LOGIC: If already selected, set to null. Otherwise, select it.
+                            selectedCandidateId = if (selectedCandidateId == candidate.id) null else candidate.id
+                        }
                     )
                 }
             }
 
-            // 4. Submit Button (Disabled until a vote is cast)
             Button(
-                onClick = { /* Submit Logic */ },
+                onClick = { /* Submit */ },
                 enabled = selectedCandidateId != null,
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(60.dp), // Taller Submit Button
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ndejjeDarkBlue,
-                    disabledContainerColor = Color.LightGray
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue, disabledContainerColor = Color.LightGray)
             ) {
-                Text("Submit Vote", color = Color.White, fontWeight = FontWeight.Bold)
+                Text("Submit Vote", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp) // Increased
             }
 
             Text(
                 "You can only vote once per position",
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 11.sp,
+                fontSize = 13.sp, // Increased
                 color = Color.Gray
             )
         }
@@ -138,63 +127,30 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
 }
 
 @Composable
-fun CandidateVoteCard(
-    candidate: CandidateEntity,
-    isSelected: Boolean,
-    ndejjeDarkBlue: Color,
-    onSelect: () -> Unit
-) {
+fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDarkBlue: Color, onSelect: () -> Unit) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSelect() },
-        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().clickable { onSelect() },
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp),
-        border = if (isSelected) BorderStroke(2.dp, ndejjeDarkBlue) else null
+        elevation = CardDefaults.cardElevation(4.dp),
+        border = if (isSelected) BorderStroke(3.dp, ndejjeDarkBlue) else null // Thicker border
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Placeholder for image
-            Box(
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
-            )
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(modifier = Modifier.size(85.dp).clip(RoundedCornerShape(12.dp)).background(Color.LightGray))
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 12.dp)
-            ) {
-                Text(candidate.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(candidate.course, fontSize = 13.sp, color = Color.Gray)
-                Text(
-                    text = "\"${candidate.motto}\"",
-                    fontSize = 12.sp,
-                    fontStyle = FontStyle.Italic,
-                    color = Color.DarkGray
-                )
+            Column(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
+                Text(candidate.name, fontWeight = FontWeight.Bold, fontSize = 20.sp) // Increased
+                Text(candidate.course, fontSize = 16.sp, color = Color.Gray) // Increased
+                Text("\"${candidate.motto}\"", fontSize = 14.sp, fontStyle = FontStyle.Italic, color = Color.Black) // Increased
             }
 
-            // Radio-style selection circle in Dark Blue
             Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, if (isSelected) ndejjeDarkBlue else Color.LightGray, CircleShape),
+                modifier = Modifier.size(30.dp).clip(CircleShape)
+                    .border(2.dp, if (isSelected) ndejjeDarkBlue else Color.Gray, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 if (isSelected) {
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .clip(CircleShape)
-                            .background(ndejjeDarkBlue)
-                    )
+                    Box(modifier = Modifier.size(16.dp).clip(CircleShape).background(ndejjeDarkBlue))
                 }
             }
         }
