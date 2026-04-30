@@ -52,10 +52,10 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
             text = { Text("Are you sure you want to vote for ${candidate?.name} as $selectedPosition?") },
             confirmButton = {
                 TextButton(onClick = {
+                    // This triggers the database update and navigation to the success screen
                     viewModel.confirmVote(selectedCandidateId!!) {
                         showDialog = false
-                        // Reset selection after a successful vote
-                        selectedCandidateId = null
+                        navController.navigate("vote_success") // Updated navigation here
                     }
                 }) {
                     Text("YES", color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
@@ -138,14 +138,14 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                         isSelected = selectedCandidateId == candidate.id,
                         ndejjeDarkBlue = ndejjeDarkBlue,
                         onSelect = {
-                            // Toggle selection logic (Uncheck if already selected)
+                            // Toggle selection logic
                             selectedCandidateId = if (selectedCandidateId == candidate.id) null else candidate.id
                         }
                     )
                 }
             }
 
-            // 4. Submit Button (Triggers the Dialog)
+            // 4. Submit Button
             Button(
                 onClick = { showDialog = true },
                 enabled = selectedCandidateId != null,
@@ -174,7 +174,6 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
 fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDarkBlue: Color, onSelect: () -> Unit) {
     val context = LocalContext.current
 
-    // Dynamically resolve image by resource name
     val imageResId = remember(candidate.imageUrl) {
         val resourceId = context.resources.getIdentifier(
             candidate.imageUrl.lowercase().trim(),
@@ -209,7 +208,6 @@ fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDar
                 Text("\"${candidate.motto}\"", fontSize = 14.sp, fontStyle = FontStyle.Italic, color = Color.Black)
             }
 
-            // Radio Button indicator
             Box(
                 modifier = Modifier.size(30.dp).clip(CircleShape)
                     .border(2.dp, if (isSelected) ndejjeDarkBlue else Color.Gray, CircleShape),

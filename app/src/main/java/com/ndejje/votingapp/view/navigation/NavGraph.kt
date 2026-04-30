@@ -79,5 +79,8 @@ fun VotingNavGraph() {
             }
             VoteScreen(navController, candidateViewModel)
         }
+        composable("vote_success") {
+            VoteSuccessScreen(navController)
+        }
     }
 }
