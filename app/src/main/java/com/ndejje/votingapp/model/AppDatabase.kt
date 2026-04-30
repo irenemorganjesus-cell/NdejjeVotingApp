@@ -5,9 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [UserEntity::class], version = 1, exportSchema = false)
+// 1. Updated entities list and version
+@Database(
+    entities = [UserEntity::class, CandidateEntity::class],
+    version = 2,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
+
+    // 2. Added the new DAO
     abstract fun userDao(): UserDao
+    abstract fun candidateDao(): CandidateDao
 
     companion object {
         @Volatile
@@ -19,7 +27,11 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "ndejje_voting_db"
-                ).build()
+                )
+                    // 3. Added fallback to destructive migration to handle version changes
+                    .fallbackToDestructiveMigration()
+                    .build()
+
                 INSTANCE = instance
                 instance
             }
