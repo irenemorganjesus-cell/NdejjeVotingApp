@@ -56,10 +56,10 @@ fun RegisterScreen(
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
     var expanded by remember { mutableStateOf(false) }
 
-    // Handle Navigation Side Effects
+    // Handle Navigation Side Effects - Now goes straight to Home
     LaunchedEffect(authState) {
         if (authState is AuthResult.Success) {
-            navController.navigate("login") {
+            navController.navigate("home") {
                 popUpTo("register") { inclusive = true }
             }
             viewModel.resetState()
@@ -84,22 +84,23 @@ fun RegisterScreen(
 
         Text(
             text = stringResource(R.string.register_title),
-            fontSize = dimensionResource(R.dimen.font_size_title_header).value.sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp, // Made bigger
+            fontWeight = FontWeight.Black,
             color = NdejjeDarkBlue
         )
 
         Text(
             text = stringResource(R.string.register_subtitle),
             color = Color.Gray,
-            fontSize = dimensionResource(R.dimen.font_size_body_1).value.sp
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.login_field_spacing)))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.login_field_spacing))
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             StandardFormInput(
                 value = regNo,
@@ -119,8 +120,9 @@ fun RegisterScreen(
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(R.string.label_course),
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.DarkGray
                 )
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -131,14 +133,15 @@ fun RegisterScreen(
                         onValueChange = {},
                         placeholder = { Text(stringResource(R.string.placeholder_course)) },
                         readOnly = true,
-                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(32.dp)) },
                         modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
+                        shape = RoundedCornerShape(12.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
                     )
                     ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                         courses.forEach { selection ->
                             DropdownMenuItem(
-                                text = { Text(selection) },
+                                text = { Text(selection, fontSize = 18.sp) },
                                 onClick = { course = selection; expanded = false }
                             )
                         }
@@ -155,7 +158,7 @@ fun RegisterScreen(
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
+                        Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null, modifier = Modifier.size(28.dp))
                     }
                 }
             )
@@ -169,19 +172,19 @@ fun RegisterScreen(
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                        Icon(if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
+                        Icon(if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null, modifier = Modifier.size(28.dp))
                     }
                 }
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
             Checkbox(checked = termsAgreed, onCheckedChange = { termsAgreed = it })
-            Text(stringResource(R.string.agree_terms), fontSize = dimensionResource(R.dimen.font_size_body_1).value.sp)
+            Text("I agree to the terms and conditions", fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
 
         if (authState is AuthResult.Error) {
-            Text((authState as AuthResult.Error).message, color = Color.Red, fontSize = 12.sp)
+            Text((authState as AuthResult.Error).message, color = Color.Red, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
         Button(
@@ -190,25 +193,25 @@ fun RegisterScreen(
                     viewModel.registerUser(UserEntity(regNo, fullName, course, password))
                 }
             },
-            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue),
             enabled = authState !is AuthResult.Loading
         ) {
             if (authState is AuthResult.Loading) {
-                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(28.dp))
             } else {
-                Text(stringResource(R.string.btn_sign_up), fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_sign_up), fontWeight = FontWeight.Black, fontSize = 20.sp)
             }
         }
 
         val footerText = buildAnnotatedString {
-            withStyle(SpanStyle(color = Color.Gray)) { append(stringResource(R.string.footer_have_account) + " ") }
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))) { append(stringResource(R.string.btn_login)) }
+            withStyle(SpanStyle(color = Color.Gray, fontSize = 16.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32), fontSize = 16.sp)) { append(stringResource(R.string.btn_login)) }
         }
-        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 16.dp))
+        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 24.dp))
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
@@ -223,16 +226,18 @@ private fun StandardFormInput(
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(labelRes), fontWeight = FontWeight.Medium, color = Color.DarkGray)
+        Text(stringResource(labelRes), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.DarkGray)
+        Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             placeholder = placeholderRes?.let { { Text(stringResource(it)) } },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+            shape = RoundedCornerShape(12.dp),
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
         )
     }
 }
