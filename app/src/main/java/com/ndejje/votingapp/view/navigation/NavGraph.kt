@@ -34,32 +34,25 @@ fun VotingNavGraph() {
     )
 
     // 3. SEED DATA LOGIC
-    // This populates the DB with the candidates from the "vote.png" design
-    // Inside NavGraph.kt -> LaunchedEffect(Unit)
     LaunchedEffect(Unit) {
-        // 1. Check if the database is already populated
-        val existingCandidates = candidateRepository.getCandidatesByPosition("Guild President")
+        val sampleCandidates = listOf(
+            // Guild President
+            CandidateEntity(id = 1, name = "Kato Brian", position = "Guild President", course = "BSc. Computer Science", motto = "Leadership for Unity", imageUrl = "kato_brian", partyName = "PSF"),
+            CandidateEntity(id = 2, name = "Namirembe Faith", position = "Guild President", course = "BBA", motto = "Your Voice, Our Responsibility", imageUrl = "namirembe_faith", partyName = "UA"),
+            CandidateEntity(id = 3, name = "Mugisha Ivan", position = "Guild President", course = "BEd. Science", motto = "Together We Build", imageUrl = "mugisha_ivan", partyName = "IND"),
 
-        // 2. Only insert if the list is empty
-        if (existingCandidates.isEmpty()) {
-            val sampleCandidates = listOf(
-                // Guild President Section
-                CandidateEntity(name = "Kato Brian", position = "Guild President", course = "BSc. Computer Science", motto = "Leadership for Unity", imageUrl = "", partyName = "PSF"),
-                CandidateEntity(name = "Namirembe Faith", position = "Guild President", course = "BBA", motto = "Your Voice, Our Responsibility", imageUrl = "", partyName = "UA"),
-                CandidateEntity(name = "Mugisha Ivan", position = "Guild President", course = "BEd. Science", motto = "Together We Build", imageUrl = "", partyName = "IND"),
+            // Guild Speaker
+            CandidateEntity(id = 4, name = "Aksam Kalungi", position = "Guild Speaker", course = "BIT", motto = "Order and Progress", imageUrl = "aksam_kalungi", partyName = "PSF"),
+            CandidateEntity(id = 5, name = "Irene Namanda", position = "Guild Speaker", course = "BSc. Engineering", motto = "The Voice of Reason", imageUrl = "irene_namanda", partyName = "UA"),
+            CandidateEntity(id = 6, name = "Muhammad Muyanja", position = "Guild Speaker", course = "B. Law", motto = "Justice for All", imageUrl = "muhammad_muyanja", partyName = "IND"),
 
-                // Guild Speaker Section
-                CandidateEntity(name = "Aksam Kalungi", position = "Guild Speaker", course = "BIT", motto = "Order and Progress", imageUrl = "", partyName = "PSF"),
-                CandidateEntity(name = "Irene Namanda", position = "Guild Speaker", course = "BSc. Engineering", motto = "The Voice of Reason", imageUrl = "", partyName = "UA"),
-                CandidateEntity(name = "Muhammad Muyanja", position = "Guild Speaker", course = "B. Law", motto = "Justice for All", imageUrl = "", partyName = "IND"),
-
-                // GRC Section
-                CandidateEntity(name = "Sharifah Namaganda", position = "GRC", course = "BIT", motto = "Innovation in Representation", imageUrl = "", partyName = "PSF"),
-                CandidateEntity(name = "Xavier Ssenono", position = "GRC", course = "BIT", motto = "Lead with Action", imageUrl = "", partyName = "UA"),
-                CandidateEntity(name = "Ndejje Student", position = "GRC", course = "B. Nursing", motto = "Service Above Self", imageUrl = "", partyName = "IND")
-            )
-            candidateRepository.insertInitialCandidates(sampleCandidates)
-        }
+            // GRC
+            CandidateEntity(id = 7, name = "Sharifah Namaganda", position = "GRC", course = "BIT", motto = "Innovation in Representation", imageUrl = "sharifah_namaganda", partyName = "PSF"),
+            CandidateEntity(id = 8, name = "Ssenono Francis Xavier", position = "GRC", course = "BIT", motto = "Lead with Action", imageUrl = "xavier_ssenono", partyName = "UA"),
+            CandidateEntity(id = 9, name = "Nakalyango Florence", position = "GRC", course = "B. Nursing", motto = "Service Above Self", imageUrl = "ndejje_student", partyName = "IND")
+        )
+        // This will now update existing records thanks to OnConflictStrategy.REPLACE
+        candidateRepository.insertInitialCandidates(sampleCandidates)
     }
 
     // 4. Navigation Routes

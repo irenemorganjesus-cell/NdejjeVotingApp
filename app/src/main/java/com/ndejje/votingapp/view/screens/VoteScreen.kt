@@ -1,6 +1,7 @@
 package com.ndejje.votingapp.view.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,19 +11,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.CandidateEntity
 import com.ndejje.votingapp.viewmodel.CandidateViewModel
 
@@ -45,7 +50,7 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("login") { popUpTo(0) } }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Logout", modifier = Modifier.size(28.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Logout", modifier = Modifier.size(28.dp))
                     }
                 }
             )
@@ -128,20 +133,43 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
 
 @Composable
 fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDarkBlue: Color, onSelect: () -> Unit) {
+    val context = LocalContext.current
+    
+    // Resolve the image resource ID. 
+    // It looks for a drawable matching candidate.imageUrl (e.g., "kato_brian")
+    val imageResId = remember(candidate.imageUrl) {
+        val resourceId = context.resources.getIdentifier(
+            candidate.imageUrl.lowercase().trim(), 
+            "drawable", 
+            context.packageName
+        )
+        if (resourceId != 0) resourceId else R.drawable.male_candidate
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onSelect() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(4.dp),
-        border = if (isSelected) BorderStroke(3.dp, ndejjeDarkBlue) else null // Thicker border
+        border = if (isSelected) BorderStroke(3.dp, ndejjeDarkBlue) else null
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(85.dp).clip(RoundedCornerShape(12.dp)).background(Color.LightGray))
+
+            // --- UPDATED IMAGE BOX ---
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = "${candidate.name}'s Profile",
+                modifier = Modifier
+                    .size(85.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.LightGray),
+                contentScale = ContentScale.Crop // Ensures the face fills the box nicely
+            )
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
-                Text(candidate.name, fontWeight = FontWeight.Bold, fontSize = 20.sp) // Increased
-                Text(candidate.course, fontSize = 16.sp, color = Color.Gray) // Increased
-                Text("\"${candidate.motto}\"", fontSize = 14.sp, fontStyle = FontStyle.Italic, color = Color.Black) // Increased
+                Text(candidate.name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(candidate.course, fontSize = 16.sp, color = Color.Gray)
+                Text("\"${candidate.motto}\"", fontSize = 14.sp, fontStyle = FontStyle.Italic, color = Color.Black)
             }
 
             Box(
