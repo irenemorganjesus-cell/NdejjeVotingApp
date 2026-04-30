@@ -32,16 +32,16 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar(
         containerColor = Color.White,
-        tonalElevation = 20.dp,
-        modifier = Modifier.height(110.dp)
+        tonalElevation = 8.dp,
+        modifier = Modifier.height(80.dp)
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.label, modifier = Modifier.size(40.dp)) },
-                label = { Text(item.label, fontSize = 18.sp, fontWeight = FontWeight.Black) },
+                icon = { Icon(item.icon, contentDescription = item.label, modifier = Modifier.size(24.dp)) },
+                label = { Text(item.label, fontSize = 12.sp, fontWeight = FontWeight.Bold) },
                 selected = currentRoute == item.route,
                 onClick = {
                     if (currentRoute != item.route) {
