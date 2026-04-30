@@ -84,7 +84,7 @@ fun VoteSuccessScreen(navController: NavController) {
             onClick = {
                 // Navigate home and clear the backstack so they can't "Go Back" to the vote screen
                 navController.navigate("home") {
-                    popUpTo("home") { inclusive = true }
+                    popUpTo(0)
                 }
             },
             modifier = Modifier

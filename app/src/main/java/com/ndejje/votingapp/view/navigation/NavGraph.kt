@@ -82,5 +82,8 @@ fun VotingNavGraph() {
         composable("vote_success") {
             VoteSuccessScreen(navController)
         }
+        composable("home") {
+            HomeScreen(navController, userName = "Grace")
+        }
     }
 }
