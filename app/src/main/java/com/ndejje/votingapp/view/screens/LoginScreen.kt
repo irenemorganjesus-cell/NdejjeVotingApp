@@ -1,11 +1,12 @@
 package com.ndejje.votingapp.view.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
@@ -15,11 +16,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -66,7 +67,10 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
 
         OutlinedTextField(
             value = regNo,
-            onValueChange = { regNo = it },
+            onValueChange = { 
+                regNo = it
+                viewModel.resetState()
+            },
             label = { Text(stringResource(R.string.label_reg_no)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
@@ -76,15 +80,34 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { 
+                password = it
+                viewModel.resetState()
+            },
             label = { Text(stringResource(R.string.label_password)) },
+            placeholder = { Text("********") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             leadingIcon = { Icon(Icons.Default.Lock, null) },
             trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
-                }
+                Icon(
+                    imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onPress = {
+                                    passwordVisible = true
+                                    try {
+                                        awaitRelease()
+                                    } finally {
+                                        passwordVisible = false
+                                    }
+                                }
+                            )
+                        }
+                )
             },
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
         )
@@ -103,11 +126,16 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             else Text(stringResource(R.string.btn_login))
         }
 
-        Text(
-            stringResource(R.string.btn_register),
-            modifier = Modifier.clickable { navController.navigate("register") }.padding(top = 16.dp),
-            color = Color(0xFF2E7D32),
-            fontWeight = FontWeight.Bold
-        )
+        OutlinedButton(
+            onClick = { 
+                viewModel.resetState()
+                navController.navigate("register") 
+            },
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp).height(56.dp),
+            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+            border = BorderStroke(1.dp, Color.Gray)
+        ) {
+            Text(stringResource(R.string.btn_register), color = Color.Gray, fontWeight = FontWeight.Bold)
+        }
     }
 }
