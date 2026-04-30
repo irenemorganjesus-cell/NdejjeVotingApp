@@ -1,5 +1,6 @@
 package com.ndejje.votingapp.view.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,19 +30,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.CandidateEntity
+import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.viewmodel.CandidateViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
+fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user: UserEntity?) {
     val candidates by viewModel.candidates.collectAsState()
     var selectedPosition by remember { mutableStateOf("Guild President") }
     var selectedCandidateId by remember { mutableStateOf<Int?>(null) }
+    val context = LocalContext.current
 
     // State to control the confirmation dialog
     var showDialog by remember { mutableStateOf(false) }
 
     val ndejjeDarkBlue = Color(0xFF001F3F)
+
+    // Check if user has already voted
+    LaunchedEffect(user) {
+        if (user?.hasVoted == true) {
+            Toast.makeText(context, "You have already voted!", Toast.LENGTH_LONG).show()
+            navController.navigate("home") {
+                popUpTo("vote") { inclusive = true }
+            }
+        }
+    }
+
+    if (user?.hasVoted == true) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
 
     // --- CONFIRMATION DIALOG LOGIC ---
     if (showDialog && selectedCandidateId != null) {
@@ -53,9 +73,9 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
             confirmButton = {
                 TextButton(onClick = {
                     // This triggers the database update and navigation to the success screen
-                    viewModel.confirmVote(selectedCandidateId!!) {
+                    viewModel.confirmVote(selectedCandidateId!!, user?.registrationNumber ?: "") {
                         showDialog = false
-                        navController.navigate("vote_success") // Updated navigation here
+                        navController.navigate("vote_success")
                     }
                 }) {
                     Text("YES", color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
@@ -81,8 +101,8 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("login") { popUpTo(0) } }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Logout", modifier = Modifier.size(28.dp))
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(28.dp))
                     }
                 }
             )

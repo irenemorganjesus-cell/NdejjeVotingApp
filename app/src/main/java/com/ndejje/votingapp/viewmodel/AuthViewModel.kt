@@ -15,12 +15,17 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
     private val _authState = MutableStateFlow<AuthResult>(AuthResult.Idle)
     val authState: StateFlow<AuthResult> = _authState
 
+    // Track the currently logged in user
+    private val _currentUser = MutableStateFlow<UserEntity?>(null)
+    val currentUser: StateFlow<UserEntity?> = _currentUser
+
     // --- REGISTRATION LOGIC ---
     fun registerUser(user: UserEntity) {
         _authState.value = AuthResult.Loading
         viewModelScope.launch {
             val result = repository.register(user)
             if (result != -1L) {
+                _currentUser.value = user
                 _authState.value = AuthResult.Success("Registration Successful!")
             } else {
                 _authState.value = AuthResult.Error("User already exists!")
@@ -34,6 +39,7 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
         viewModelScope.launch {
             val user = repository.login(regNo)
             if (user != null && user.password == pass) {
+                _currentUser.value = user
                 _authState.value = AuthResult.Success("Welcome, ${user.fullName}")
             } else {
                 _authState.value = AuthResult.Error("Invalid credentials!")

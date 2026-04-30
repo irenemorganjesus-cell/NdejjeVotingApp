@@ -2,6 +2,8 @@ package com.ndejje.votingapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -30,7 +32,7 @@ fun VotingNavGraph() {
     )
 
     val candidateViewModel: CandidateViewModel = viewModel(
-        factory = CandidateViewModelFactory(candidateRepository)
+        factory = CandidateViewModelFactory(candidateRepository, userRepository)
     )
 
     // 3. SEED DATA LOGIC
@@ -51,7 +53,6 @@ fun VotingNavGraph() {
             CandidateEntity(id = 8, name = "Ssenono Francis Xavier", position = "GRC", course = "BIT", motto = "Lead with Action", imageUrl = "xavier_ssenono", partyName = "UA"),
             CandidateEntity(id = 9, name = "Nakalyango Florence", position = "GRC", course = "B. Nursing", motto = "Service Above Self", imageUrl = "ndejje_student", partyName = "IND")
         )
-        // This will now update existing records thanks to OnConflictStrategy.REPLACE
         candidateRepository.insertInitialCandidates(sampleCandidates)
     }
 
@@ -73,17 +74,19 @@ fun VotingNavGraph() {
             RegisterScreen(navController, authViewModel)
         }
         composable("home") {
+            val user by authViewModel.currentUser.collectAsState()
+            HomeScreen(navController, userName = user?.fullName ?: "Grace")
+        }
+        composable("vote") {
+            val user by authViewModel.currentUser.collectAsState()
             // Fetch "Guild President" candidates by default when entering the screen
             LaunchedEffect(Unit) {
                 candidateViewModel.fetchCandidates("Guild President")
             }
-            VoteScreen(navController, candidateViewModel)
+            VoteScreen(navController, candidateViewModel, user)
         }
         composable("vote_success") {
             VoteSuccessScreen(navController)
-        }
-        composable("home") {
-            HomeScreen(navController, userName = "Grace")
         }
     }
 }

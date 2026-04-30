@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 
 class UserRepository(private val userDao: UserDao) {
 
-    // Runs on IO Dispatcher to keep the UI smooth
     suspend fun register(user: UserEntity): Long {
         return withContext(Dispatchers.IO) {
             userDao.registerUser(user)
@@ -15,6 +14,12 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun login(regNo: String): UserEntity? {
         return withContext(Dispatchers.IO) {
             userDao.loginUser(regNo)
+        }
+    }
+
+    suspend fun markUserAsVoted(regNo: String) {
+        withContext(Dispatchers.IO) {
+            userDao.markUserAsVoted(regNo)
         }
     }
 }
