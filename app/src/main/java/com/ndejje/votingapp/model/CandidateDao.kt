@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface CandidateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCandidates(candidates: List<CandidateEntity>)
+    suspend fun insertCandidates(candidates: List<CandidateEntity>) // This must match!
 
     @Query("SELECT * FROM candidates WHERE position = :pos")
     suspend fun getCandidatesByPosition(pos: String): List<CandidateEntity>

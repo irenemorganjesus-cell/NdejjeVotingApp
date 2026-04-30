@@ -37,15 +37,47 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
     val candidates by viewModel.candidates.collectAsState()
     var selectedPosition by remember { mutableStateOf("Guild President") }
     var selectedCandidateId by remember { mutableStateOf<Int?>(null) }
+
+    // State to control the confirmation dialog
+    var showDialog by remember { mutableStateOf(false) }
+
     val ndejjeDarkBlue = Color(0xFF001F3F)
+
+    // --- CONFIRMATION DIALOG LOGIC ---
+    if (showDialog && selectedCandidateId != null) {
+        val candidate = candidates.find { it.id == selectedCandidateId }
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Confirm Vote", fontWeight = FontWeight.Bold) },
+            text = { Text("Are you sure you want to vote for ${candidate?.name} as $selectedPosition?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.confirmVote(selectedCandidateId!!) {
+                        showDialog = false
+                        // Reset selection after a successful vote
+                        selectedCandidateId = null
+                    }
+                }) {
+                    Text("YES", color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("CANCEL", color = Color.Gray)
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(16.dp)
+        )
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Cast Your Vote", fontWeight = FontWeight.Bold, fontSize = 24.sp) // Increased
-                        Text("Select your preferred in elections", fontSize = 14.sp, color = Color.Gray) // Increased
+                        Text("Cast Your Vote", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                        Text("Select your preferred in elections", fontSize = 14.sp, color = Color.Gray)
                     }
                 },
                 navigationIcon = {
@@ -58,6 +90,7 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize().padding(horizontal = 16.dp)) {
 
+            // 1. Position Navigation Tabs
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -74,24 +107,26 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                             containerColor = if (isSelected) ndejjeDarkBlue else Color(0xFFF1F1F1),
                             contentColor = if (isSelected) Color.White else Color.Black
                         ),
-                        modifier = Modifier.weight(1f).height(48.dp), // Taller buttons
+                        modifier = Modifier.weight(1f).height(48.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(pos, fontSize = 12.sp, fontWeight = FontWeight.Bold) // Increased & Bold
+                        Text(pos, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
+            // 2. Instructions Divider
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), contentAlignment = Alignment.Center) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.LightGray)
                 Text(
                     "Select ONE candidate",
                     modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(horizontal = 12.dp),
-                    fontSize = 15.sp, // Increased
+                    fontSize = 15.sp,
                     color = Color.DarkGray
                 )
             }
 
+            // 3. Candidate Selection List
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -103,28 +138,32 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
                         isSelected = selectedCandidateId == candidate.id,
                         ndejjeDarkBlue = ndejjeDarkBlue,
                         onSelect = {
-                            // UNCHECK LOGIC: If already selected, set to null. Otherwise, select it.
+                            // Toggle selection logic (Uncheck if already selected)
                             selectedCandidateId = if (selectedCandidateId == candidate.id) null else candidate.id
                         }
                     )
                 }
             }
 
+            // 4. Submit Button (Triggers the Dialog)
             Button(
-                onClick = { /* Submit */ },
+                onClick = { showDialog = true },
                 enabled = selectedCandidateId != null,
-                modifier = Modifier.fillMaxWidth().height(60.dp), // Taller Submit Button
+                modifier = Modifier.fillMaxWidth().height(60.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue, disabledContainerColor = Color.LightGray)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ndejjeDarkBlue,
+                    disabledContainerColor = Color.LightGray
+                )
             ) {
-                Text("Submit Vote", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp) // Increased
+                Text("Submit Vote", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }
 
             Text(
                 "You can only vote once per position",
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 13.sp, // Increased
+                fontSize = 13.sp,
                 color = Color.Gray
             )
         }
@@ -134,13 +173,12 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel) {
 @Composable
 fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDarkBlue: Color, onSelect: () -> Unit) {
     val context = LocalContext.current
-    
-    // Resolve the image resource ID. 
-    // It looks for a drawable matching candidate.imageUrl (e.g., "kato_brian")
+
+    // Dynamically resolve image by resource name
     val imageResId = remember(candidate.imageUrl) {
         val resourceId = context.resources.getIdentifier(
-            candidate.imageUrl.lowercase().trim(), 
-            "drawable", 
+            candidate.imageUrl.lowercase().trim(),
+            "drawable",
             context.packageName
         )
         if (resourceId != 0) resourceId else R.drawable.male_candidate
@@ -155,7 +193,6 @@ fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDar
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
 
-            // --- UPDATED IMAGE BOX ---
             Image(
                 painter = painterResource(id = imageResId),
                 contentDescription = "${candidate.name}'s Profile",
@@ -163,7 +200,7 @@ fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDar
                     .size(85.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.LightGray),
-                contentScale = ContentScale.Crop // Ensures the face fills the box nicely
+                contentScale = ContentScale.Crop
             )
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
@@ -172,6 +209,7 @@ fun CandidateVoteCard(candidate: CandidateEntity, isSelected: Boolean, ndejjeDar
                 Text("\"${candidate.motto}\"", fontSize = 14.sp, fontStyle = FontStyle.Italic, color = Color.Black)
             }
 
+            // Radio Button indicator
             Box(
                 modifier = Modifier.size(30.dp).clip(CircleShape)
                     .border(2.dp, if (isSelected) ndejjeDarkBlue else Color.Gray, CircleShape),
