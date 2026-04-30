@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,14 +27,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
+import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import com.ndejje.votingapp.viewmodel.AuthViewModel
+import com.ndejje.votingapp.viewmodel.AuthResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: AuthViewModel
+) {
     var regNo by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
     var course by remember { mutableStateOf("") }
@@ -45,11 +51,20 @@ fun RegisterScreen(navController: NavController) {
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var termsAgreed by remember { mutableStateOf(false) }
 
-    // Dropdown state
-    var expanded by remember { mutableStateOf(false) }
-    val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
-
+    val authState by viewModel.authState.collectAsState()
     val scrollState = rememberScrollState()
+    val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
+    var expanded by remember { mutableStateOf(false) }
+
+    // Handle Navigation Side Effects
+    LaunchedEffect(authState) {
+        if (authState is AuthResult.Success) {
+            navController.navigate("login") {
+                popUpTo("register") { inclusive = true }
+            }
+            viewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -59,16 +74,14 @@ fun RegisterScreen(navController: NavController) {
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
-        // University Logo
+
         Image(
             painter = painterResource(id = R.drawable.university_logo),
             contentDescription = stringResource(R.string.logo_description),
             modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
         )
 
-        // Header Text
         Text(
             text = stringResource(R.string.register_title),
             fontSize = dimensionResource(R.dimen.font_size_title_header).value.sp,
@@ -84,7 +97,6 @@ fun RegisterScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.login_field_spacing)))
 
-        // Form Section
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.login_field_spacing))
@@ -103,47 +115,31 @@ fun RegisterScreen(navController: NavController) {
                 placeholderRes = R.string.placeholder_full_name
             )
 
-            // Course Dropdown Input
+            // Course Dropdown
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(R.string.label_course),
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 ExposedDropdownMenuBox(
                     expanded = expanded,
-                    onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier.fillMaxWidth()
+                    onExpandedChange = { expanded = !expanded }
                 ) {
                     OutlinedTextField(
                         value = course,
                         onValueChange = {},
                         placeholder = { Text(stringResource(R.string.placeholder_course)) },
                         readOnly = true,
-                        trailingIcon = {
-                            Icon(
-                                Icons.Default.ArrowDropDown,
-                                contentDescription = null,
-                                modifier = Modifier.size(dimensionResource(R.dimen.dropdown_arrow_size))
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
                     )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        courses.forEach { selectedCourse ->
+                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        courses.forEach { selection ->
                             DropdownMenuItem(
-                                text = { Text(selectedCourse) },
-                                onClick = {
-                                    course = selectedCourse
-                                    expanded = false
-                                }
+                                text = { Text(selection) },
+                                onClick = { course = selection; expanded = false }
                             )
                         }
                     }
@@ -158,9 +154,8 @@ fun RegisterScreen(navController: NavController) {
                 keyboardType = KeyboardType.Password,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = null)
+                        Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
                     }
                 }
             )
@@ -173,69 +168,45 @@ fun RegisterScreen(navController: NavController) {
                 keyboardType = KeyboardType.Password,
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                        Icon(imageVector = image, contentDescription = null)
+                        Icon(if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
                     }
                 }
             )
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.login_field_spacing)))
-
-        // Terms and Conditions
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = termsAgreed,
-                onCheckedChange = { termsAgreed = it },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = MaterialTheme.colorScheme.primary,
-                    uncheckedColor = Color.Gray
-                )
-            )
-            Text(
-                text = stringResource(R.string.agree_terms),
-                fontSize = dimensionResource(R.dimen.font_size_body_1).value.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Checkbox(checked = termsAgreed, onCheckedChange = { termsAgreed = it })
+            Text(stringResource(R.string.agree_terms), fontSize = dimensionResource(R.dimen.font_size_body_1).value.sp)
         }
 
-        // Action Button
+        if (authState is AuthResult.Error) {
+            Text((authState as AuthResult.Error).message, color = Color.Red, fontSize = 12.sp)
+        }
+
         Button(
-            onClick = { /* Logic */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(R.dimen.button_height)),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_font_size)),
-            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue)
+            onClick = {
+                if (termsAgreed && password == confirmPassword && regNo.isNotEmpty()) {
+                    viewModel.registerUser(UserEntity(regNo, fullName, course, password))
+                }
+            },
+            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
+            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue),
+            enabled = authState !is AuthResult.Loading
         ) {
-            Text(
-                text = stringResource(R.string.btn_sign_up),
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            if (authState is AuthResult.Loading) {
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+            } else {
+                Text(stringResource(R.string.btn_sign_up), fontWeight = FontWeight.Bold)
+            }
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.form_elements_margin_top)))
-
-        // Footer
         val footerText = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
-                append(stringResource(R.string.footer_have_account) + " ")
-            }
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))) {
-                append(stringResource(R.string.btn_login))
-            }
+            withStyle(SpanStyle(color = Color.Gray)) { append(stringResource(R.string.footer_have_account) + " ") }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))) { append(stringResource(R.string.btn_login)) }
         }
-
-        Text(
-            text = footerText,
-            fontSize = dimensionResource(R.dimen.font_size_body_1).value.sp,
-            modifier = Modifier.clickable { navController.navigate("login") }
-        )
+        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 16.dp))
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
     }
@@ -251,22 +222,12 @@ private fun StandardFormInput(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    val placeholder: @Composable (() -> Unit)? = if (placeholderRes != null) {
-        { Text(stringResource(placeholderRes)) }
-    } else {
-        null
-    }
-
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(labelRes),
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text(stringResource(labelRes), fontWeight = FontWeight.Medium, color = Color.DarkGray)
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = placeholder,
+            placeholder = placeholderRes?.let { { Text(stringResource(it)) } },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
             visualTransformation = visualTransformation,

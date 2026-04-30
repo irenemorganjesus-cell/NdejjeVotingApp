@@ -26,154 +26,88 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
-import com.ndejje.votingapp.ui.theme.LayoutWeights
 import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import com.ndejje.votingapp.viewmodel.AuthViewModel
+import com.ndejje.votingapp.viewmodel.AuthResult
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
     var regNo by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    val authState by viewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthResult.Success) {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+            viewModel.resetState()
+        }
+    }
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(dimensionResource(R.dimen.padding_standard_size)),
+        modifier = Modifier.fillMaxSize().background(Color.White).padding(dimensionResource(R.dimen.padding_standard_size)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
 
-        //Small University Logo
         Image(
             painter = painterResource(id = R.drawable.university_logo),
-            contentDescription = stringResource(R.string.logo_description),
+            contentDescription = null,
             modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
         )
 
-        //Welcome Header
-        Text(
-            text = stringResource(R.string.login_welcome),
-            fontSize = dimensionResource(R.dimen.font_size_title).value.sp,
-            fontWeight = FontWeight.Bold,
-            color = NdejjeDarkBlue
+        Text(stringResource(R.string.login_welcome), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = NdejjeDarkBlue)
+        Text(stringResource(R.string.login_subtitle), color = Color.Gray)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = regNo,
+            onValueChange = { regNo = it },
+            label = { Text(stringResource(R.string.label_reg_no)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
         )
 
-        Text(
-            text = stringResource(R.string.login_subtitle),
-            color = Color.Gray,
-            fontSize = dimensionResource(R.dimen.together_message_size).value.sp
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(stringResource(R.string.label_password)) },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            leadingIcon = { Icon(Icons.Default.Lock, null) },
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null)
+                }
+            },
+            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
-
-        //Registration Number Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(R.string.label_reg_no), fontWeight = FontWeight.Medium)
-            OutlinedTextField(
-                value = regNo,
-                onValueChange = { regNo = it },
-                placeholder = { Text(stringResource(R.string.placeholder_reg_no)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
-            )
+        if (authState is AuthResult.Error) {
+            Text((authState as AuthResult.Error).message, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.login_field_spacing)))
-
-        //Password Field
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(R.string.label_password), fontWeight = FontWeight.Medium)
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                placeholder = { Text(stringResource(R.string.placeholder_pass)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = null)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-        }
-
-        //Forgot Password link
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-            Text(
-                text = stringResource(R.string.link_forgot_password),
-                color = Color(0xFF2E7D32), // Dark Green like the image
-                fontSize = dimensionResource(R.dimen.pass_holder_size).value.sp,
-                modifier = Modifier
-                    .padding(top = dimensionResource(R.dimen.padding_forgot))
-                    .clickable { /* Handle Forgot Password */ }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_standard)))
-
-        //Login Button
         Button(
-            onClick = { /* Logic for DB check later */ },
-            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue)
+            onClick = { viewModel.loginUser(regNo, password) },
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp).height(56.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue),
+            enabled = authState !is AuthResult.Loading
         ) {
-            Text(stringResource(R.string.btn_login), fontWeight = FontWeight.Bold)
+            if (authState is AuthResult.Loading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+            else Text(stringResource(R.string.btn_login))
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacer_height)))
-
-        //Divider
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            HorizontalDivider(modifier = Modifier.weight(LayoutWeights.StandardWeight), thickness = 1.dp, color = Color.LightGray)
-            Text(
-                text = stringResource(R.string.divider_text),
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_forgot)),
-                color = Color.Gray,
-                fontSize = dimensionResource(R.dimen.continue_size).value.sp
-            )
-            HorizontalDivider(modifier = Modifier.weight(LayoutWeights.StandardWeight), thickness = dimensionResource(R.dimen.border_width), color = Color.LightGray)
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacer_height)))
-
-        //Google Login Button
-        OutlinedButton(
-            onClick = { /* Handle Google Login */ },
-            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.button_height)),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            border = androidx.compose.foundation.BorderStroke(dimensionResource(R.dimen.border_width), Color.LightGray)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_google), // Ensure you have a google icon in drawables
-                    contentDescription = null,
-                    modifier = Modifier.size(dimensionResource(R.dimen.google_icon_size))
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_forgot)))
-                Text(stringResource(R.string.btn_google_login), color = Color.Black)
-            }
-        }
-
-        Spacer(modifier = Modifier.weight(LayoutWeights.StandardWeight))
-
-        //Footer: Link to Register
-        Row {
-            Text(text = stringResource(R.string.footer_no_account), color = Color.Gray)
-            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.indicator_stroke)))
-            Text(
-                text = stringResource(R.string.btn_register),
-                color = Color(0xFF2E7D32),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { navController.navigate("register") }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.footer_space)))
+        Text(
+            stringResource(R.string.btn_register),
+            modifier = Modifier.clickable { navController.navigate("register") }.padding(top = 16.dp),
+            color = Color(0xFF2E7D32),
+            fontWeight = FontWeight.Bold
+        )
     }
 }

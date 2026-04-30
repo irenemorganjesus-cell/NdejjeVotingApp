@@ -1,11 +1,15 @@
 package com.ndejje.votingapp.view.screens
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -24,9 +28,34 @@ import androidx.navigation.NavController
 import com.ndejje.votingapp.R
 import com.ndejje.votingapp.ui.theme.LayoutWeights
 import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
+    //list of images
+    val images = listOf(
+        R.drawable.university_building,
+        R.drawable.university_campus,
+        R.drawable.university_kampala
+    )
+
+    //Setup Pager State
+    val pagerState = rememberPagerState(pageCount = { images.size })
+
+    // Auto-scroll Animation Logic
+    LaunchedEffect(Unit) {
+        while (true) {
+            yield()
+            delay(3000) // Stay on image for 3 seconds
+            val nextPage = (pagerState.currentPage + 1) % images.size
+            pagerState.animateScrollToPage(
+                page = nextPage,
+                animationSpec = tween(durationMillis = 800) // Smooth slide transition
+            )
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,7 +65,6 @@ fun WelcomeScreen(navController: NavController) {
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
 
-        // 1. "Welcome to" - Now Bigger
         Text(
             text = stringResource(R.string.welcome_to),
             fontSize = dimensionResource(R.dimen.font_size_welcome).value.sp,
@@ -45,7 +73,6 @@ fun WelcomeScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // 2. "Ndejje University Mobile Voting" - Large and Bold
         Text(
             text = stringResource(R.string.welcome_app_name),
             fontSize = dimensionResource(R.dimen.font_size_app_title).value.sp,
@@ -57,7 +84,6 @@ fun WelcomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_standard)))
 
-        // 3. "Safe . Secure . Transparent" - Increased size & visibility
         Text(
             text = stringResource(R.string.welcome_tagline),
             color = Color.Gray,
@@ -66,7 +92,6 @@ fun WelcomeScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // 4. "Together, we build a better campus." - Clean and legible
         Text(
             text = stringResource(R.string.welcome_motto),
             color = Color.Gray.copy(alpha = 0.8f),
@@ -76,7 +101,7 @@ fun WelcomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.weight(LayoutWeights.StandardWeight))
 
-        // University Image Section (Faded Edges preserved)
+        // --- ANIMATED IMAGE CAROUSEL SECTION ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,7 +112,7 @@ fun WelcomeScreen(navController: NavController) {
                     drawRect(
                         brush = Brush.verticalGradient(
                             0f to Color.Transparent,
-                            0.15f to Color.Black, // Adjusted for a smoother blend
+                            0.15f to Color.Black,
                             0.85f to Color.Black,
                             1f to Color.Transparent
                         ),
@@ -95,12 +120,17 @@ fun WelcomeScreen(navController: NavController) {
                     )
                 }
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.university_building),
-                contentDescription = stringResource(R.string.university_image_description),
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillWidth
-            )
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
+            ) { page ->
+                Image(
+                    painter = painterResource(id = images[page]),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(LayoutWeights.StandardWeight))

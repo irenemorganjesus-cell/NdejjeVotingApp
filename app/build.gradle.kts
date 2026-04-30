@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.ndejje.votingapp"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ndejje.votingapp"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
