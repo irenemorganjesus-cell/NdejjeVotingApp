@@ -119,10 +119,10 @@ fun HomeScreen(navController: NavController, userName: String) {
                         navController.navigate("vote")
                     }
                     QuickActionCard("Results", "Live updates", Icons.Default.BarChart, Modifier.weight(1f), ndejjeDarkBlue) {
-                        // Results navigation logic
+                        navController.navigate("results")
                     }
                     QuickActionCard("Profile", "My Info", Icons.Default.Person, Modifier.weight(1f), ndejjeDarkBlue) {
-                        // Profile navigation logic
+                        navController.navigate("profile")
                     }
                 }
 

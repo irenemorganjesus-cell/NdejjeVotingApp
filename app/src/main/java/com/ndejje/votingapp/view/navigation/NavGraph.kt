@@ -85,6 +85,13 @@ fun VotingNavGraph() {
             }
             VoteScreen(navController, candidateViewModel, user)
         }
+        composable("results") {
+            ResultsScreen(navController)
+        }
+        composable("profile") {
+            val user by authViewModel.currentUser.collectAsState()
+            ProfileScreen(navController, user)
+        }
         composable("vote_success") {
             VoteSuccessScreen(navController)
         }
