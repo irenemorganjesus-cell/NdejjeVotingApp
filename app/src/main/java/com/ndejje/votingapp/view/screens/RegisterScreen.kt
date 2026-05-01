@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Visibility
@@ -57,7 +58,6 @@ fun RegisterScreen(
     var validationError by remember { mutableStateOf<String?>(null) }
 
     val authState by viewModel.authState.collectAsState()
-    val scrollState = rememberScrollState()
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
     var expanded by remember { mutableStateOf(false) }
 
@@ -95,21 +95,32 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(dimensionResource(R.dimen.padding_standard_size))
-            .verticalScroll(scrollState),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
+        // Back Navigation Arrow
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
 
         Image(
             painter = painterResource(id = R.drawable.university_logo),
             contentDescription = stringResource(R.string.logo_description),
-            modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
+            modifier = Modifier.size(60.dp)
         )
 
         Text(
             text = stringResource(R.string.register_title),
-            fontSize = 32.sp,
+            fontSize = 24.sp,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary
         )
@@ -117,15 +128,15 @@ fun RegisterScreen(
         Text(
             text = stringResource(R.string.register_subtitle),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            fontSize = 18.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StandardFormInput(
                 value = regNo,
@@ -150,38 +161,32 @@ fun RegisterScreen(
             )
 
             // Course Dropdown
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(R.string.label_course),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = course,
+                    onValueChange = {},
+                    label = { Text(stringResource(R.string.label_course)) },
+                    placeholder = { Text(stringResource(R.string.placeholder_course)) },
+                    readOnly = true,
+                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(24.dp)) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    shape = RoundedCornerShape(12.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
                 )
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded }
-                ) {
-                    OutlinedTextField(
-                        value = course,
-                        onValueChange = {},
-                        placeholder = { Text(stringResource(R.string.placeholder_course)) },
-                        readOnly = true,
-                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(32.dp)) },
-                        modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        shape = RoundedCornerShape(12.dp),
-                        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
-                    )
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        courses.forEach { selection ->
-                            DropdownMenuItem(
-                                text = { Text(selection, fontSize = 18.sp) },
-                                onClick = { 
-                                    course = selection
-                                    expanded = false
-                                    onFieldChange()
-                                }
-                            )
-                        }
+                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    courses.forEach { selection ->
+                        DropdownMenuItem(
+                            text = { Text(selection, fontSize = 16.sp) },
+                            onClick = { 
+                                course = selection
+                                expanded = false
+                                onFieldChange()
+                            }
+                        )
                     }
                 }
             }
@@ -200,7 +205,7 @@ fun RegisterScreen(
                             imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                             contentDescription = null,
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(24.dp)
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onPress = {
@@ -217,9 +222,9 @@ fun RegisterScreen(
                     }
                 )
                 if (password.isNotEmpty()) {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
-                        Text("Strength: ", fontSize = 14.sp, color = Color.Gray)
-                        Text(strengthText, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = strengthColor)
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
+                        Text("Strength: ", fontSize = 12.sp, color = Color.Gray)
+                        Text(strengthText, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = strengthColor)
                     }
                 }
             }
@@ -236,7 +241,7 @@ fun RegisterScreen(
                         imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(28.dp)
+                            .size(24.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = {
@@ -254,13 +259,13 @@ fun RegisterScreen(
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
             Checkbox(
                 checked = termsAgreed, 
                 onCheckedChange = { termsAgreed = it; onFieldChange() },
                 colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
             )
-            Text("I agree to the terms and conditions", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
+            Text("I agree to the terms and conditions", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
         }
 
         // Error display
@@ -269,9 +274,9 @@ fun RegisterScreen(
             Text(
                 text = errorToDisplay,
                 color = MaterialTheme.colorScheme.error,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 4.dp)
             )
         }
 
@@ -307,19 +312,18 @@ fun RegisterScreen(
                     }
                 }
             },
-            modifier = Modifier.height(64.dp),
-            enabled = authState !is AuthResult.Loading
+            modifier = Modifier.height(56.dp),
+            enabled = authState !is AuthResult.Loading && termsAgreed
         )
 
         val footerText = buildAnnotatedString {
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), fontSize = 16.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 16.sp)) { append(stringResource(R.string.btn_login)) }
+            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), fontSize = 14.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)) { append(stringResource(R.string.btn_login)) }
         }
-        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 24.dp))
-
-        Spacer(modifier = Modifier.height(40.dp))
+        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 8.dp))
     }
 }
+
 
 @Composable
 private fun StandardFormInput(
@@ -331,24 +335,22 @@ private fun StandardFormInput(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(labelRes), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
-        Spacer(modifier = Modifier.height(4.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            placeholder = placeholderRes?.let { { Text(stringResource(it)) } },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            visualTransformation = visualTransformation,
-            trailingIcon = trailingIcon,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-            )
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(labelRes)) },
+        placeholder = placeholderRes?.let { { Text(stringResource(it)) } },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        visualTransformation = visualTransformation,
+        trailingIcon = trailingIcon,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        textStyle = LocalTextStyle.current.copy(fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
         )
-    }
+    )
 }
+
