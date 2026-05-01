@@ -25,15 +25,19 @@ import kotlinx.coroutines.delay
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(navController: NavController, userName: String) {
+fun HomeScreen(navController: NavController, userName: String, candidateViewModel: com.ndejje.votingapp.viewmodel.CandidateViewModel) {
     // Defined colors based on your branding requirements
     val ndejjeDarkBlue = Color(0xFF001F3F)
     val lightBlueAccent = Color(0xFFE3F2FD)
     val pearlWhite = Color(0xFFF5F5F5)
 
+    val totalVotes by candidateViewModel.totalVotes.collectAsState()
+    val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
+
     // Countdown logic: Target is 7 days from now
     var timeLeft by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
+        candidateViewModel.refreshStats()
         val targetTime = Calendar.getInstance().apply {
             add(Calendar.DAY_OF_YEAR, 7)
         }.timeInMillis
@@ -182,6 +186,25 @@ fun HomeScreen(navController: NavController, userName: String) {
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Total Votes: $totalVotes",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 22.sp,
+                    color = ndejjeDarkBlue
+                )
+
+                Text(
+                    text = "Last updated: $lastVoteTime",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.model.UserEntity
+import com.ndejje.votingapp.view.components.BottomNavigationBar
 
 @Composable
 fun ProfileScreen(navController: NavController, user: UserEntity?) {
@@ -30,11 +31,11 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             // Profile Icon
             Surface(
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(100.dp),
                 shape = CircleShape,
                 color = ndejjeDarkBlue
             ) {
@@ -42,27 +43,27 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.padding(24.dp).size(60.dp)
+                    modifier = Modifier.padding(20.dp).size(40.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = user?.fullName ?: "Grace",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Black,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
                 color = ndejjeDarkBlue
             )
 
             Text(
                 text = user?.registrationNumber ?: "23/2/314/D/001",
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 color = Color.Gray,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Profile Info Card
             Card(
@@ -70,11 +71,11 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
-                elevation = CardDefaults.cardElevation(4.dp)
+                elevation = CardDefaults.cardElevation(2.dp)
             ) {
-                Column(modifier = Modifier.padding(24.dp)) {
+                Column(modifier = Modifier.padding(20.dp)) {
                     ProfileInfoRow("Course", user?.course ?: "B.IT")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
                     ProfileInfoRow("Voting Status", if (user?.hasVoted == true) "Voted" else "Not Voted")
                 }
             }
@@ -90,11 +91,11 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp)
-                    .height(60.dp),
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
             ) {
-                Text("Logout", fontSize = 20.sp, fontWeight = FontWeight.Black)
+                Text("Logout", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -106,7 +107,7 @@ fun ProfileInfoRow(label: String, value: String) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontSize = 18.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-        Text(text = value, fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Black)
+        Text(text = label, fontSize = 16.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
+        Text(text = value, fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.SemiBold)
     }
 }

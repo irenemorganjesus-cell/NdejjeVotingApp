@@ -75,7 +75,11 @@ fun VotingNavGraph() {
         }
         composable("home") {
             val user by authViewModel.currentUser.collectAsState()
-            HomeScreen(navController, userName = user?.fullName ?: "Grace")
+            HomeScreen(
+                navController = navController,
+                userName = user?.fullName ?: "Grace",
+                candidateViewModel = candidateViewModel
+            )
         }
         composable("vote") {
             val user by authViewModel.currentUser.collectAsState()

@@ -17,6 +17,12 @@ class CandidateRepository(private val candidateDao: CandidateDao) {
         }
     }
 
+    suspend fun getTotalVotes(): Int {
+        return withContext(Dispatchers.IO) {
+            candidateDao.getTotalVotes() ?: 0
+        }
+    }
+
     // This now correctly calls 'insertCandidates' in the DAO
     suspend fun insertInitialCandidates(candidates: List<CandidateEntity>) {
         withContext(Dispatchers.IO) {

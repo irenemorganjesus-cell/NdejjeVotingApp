@@ -15,4 +15,7 @@ interface CandidateDao {
 
     @Query("UPDATE candidates SET voteCount = voteCount + 1 WHERE id = :candidateId")
     suspend fun incrementVote(candidateId: Int)
+
+    @Query("SELECT SUM(voteCount) FROM candidates")
+    suspend fun getTotalVotes(): Int?
 }
