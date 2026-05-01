@@ -34,10 +34,9 @@ fun HomeScreen(navController: NavController, userName: String, candidateViewMode
     val totalVotes by candidateViewModel.totalVotes.collectAsState()
     val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
 
-    // Countdown logic: Target is 7 days from now
+    // Countdown logic
     var timeLeft by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
-        candidateViewModel.refreshStats()
         val targetTime = Calendar.getInstance().apply {
             add(Calendar.DAY_OF_YEAR, 7)
         }.timeInMillis

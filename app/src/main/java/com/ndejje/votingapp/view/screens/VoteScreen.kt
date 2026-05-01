@@ -38,13 +38,15 @@ import com.ndejje.votingapp.viewmodel.CandidateViewModel
 fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user: UserEntity?) {
     val candidates by viewModel.candidates.collectAsState()
     var selectedPosition by remember { mutableStateOf("Guild President") }
-    var selectedCandidateId by remember { mutableStateOf<Int?>(null) }
+    
+    // Track selections for all three positions
+    var selectedCandidates by remember { mutableStateOf(mapOf<String, Int?>()) }
+    
     val context = LocalContext.current
-
-    // State to control the confirmation dialog
     var showDialog by remember { mutableStateOf(false) }
-
     val ndejjeDarkBlue = Color(0xFF001F3F)
+
+    val positions = listOf("Guild President", "Guild Speaker", "GRC")
 
     // Check if user has already voted
     LaunchedEffect(user) {
@@ -64,21 +66,30 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
     }
 
     // --- CONFIRMATION DIALOG LOGIC ---
-    if (showDialog && selectedCandidateId != null) {
-        val candidate = candidates.find { it.id == selectedCandidateId }
+    if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Confirm Vote", fontWeight = FontWeight.Bold) },
-            text = { Text("Are you sure you want to vote for ${candidate?.name} as $selectedPosition?") },
+            title = { Text("Confirm Your Votes", fontWeight = FontWeight.Bold) },
+            text = { 
+                Column {
+                    Text("Are you sure you want to submit your choices for all positions?")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    positions.forEach { pos ->
+                        val candId = selectedCandidates[pos]
+                        // We could fetch names here, but for simplicity in the dialog:
+                        Text("• $pos selected", fontWeight = FontWeight.Medium)
+                    }
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
-                    // This triggers the database update and navigation to the success screen
-                    viewModel.confirmVote(selectedCandidateId!!, user?.registrationNumber ?: "") {
+                    val ids = selectedCandidates.values.filterNotNull()
+                    viewModel.confirmVotes(ids, user?.registrationNumber ?: "") {
                         showDialog = false
                         navController.navigate("vote_success")
                     }
                 }) {
-                    Text("YES", color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
+                    Text("SUBMIT ALL", color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -97,7 +108,7 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Cast Your Vote", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                        Text("Select your preferred in elections", fontSize = 14.sp, color = Color.Gray)
+                        Text("Complete all sections to submit", fontSize = 14.sp, color = Color.Gray)
                     }
                 },
                 navigationIcon = {
@@ -115,22 +126,24 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                listOf("Guild President", "Guild Speaker", "GRC").forEach { pos ->
+                positions.forEach { pos ->
                     val isSelected = selectedPosition == pos
+                    val isCompleted = selectedCandidates[pos] != null
+                    
                     Button(
                         onClick = {
                             selectedPosition = pos
-                            selectedCandidateId = null
                             viewModel.fetchCandidates(pos)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSelected) ndejjeDarkBlue else Color(0xFFF1F1F1),
-                            contentColor = if (isSelected) Color.White else Color.Black
+                            containerColor = if (isSelected) ndejjeDarkBlue else if (isCompleted) Color(0xFFE8F5E9) else Color(0xFFF1F1F1),
+                            contentColor = if (isSelected) Color.White else if (isCompleted) Color(0xFF2E7D32) else Color.Black
                         ),
                         modifier = Modifier.weight(1f).height(48.dp),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        border = if (isCompleted && !isSelected) BorderStroke(1.dp, Color(0xFF2E7D32)) else null
                     ) {
-                        Text(pos, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text(pos, fontSize = 10.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
                 }
             }
@@ -139,10 +152,11 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), contentAlignment = Alignment.Center) {
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.LightGray)
                 Text(
-                    "Select ONE candidate",
+                    "Voting for: $selectedPosition",
                     modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(horizontal = 12.dp),
                     fontSize = 15.sp,
-                    color = Color.DarkGray
+                    color = ndejjeDarkBlue,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -155,20 +169,23 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
                 items(candidates) { candidate ->
                     CandidateVoteCard(
                         candidate = candidate,
-                        isSelected = selectedCandidateId == candidate.id,
+                        isSelected = selectedCandidates[selectedPosition] == candidate.id,
                         ndejjeDarkBlue = ndejjeDarkBlue,
                         onSelect = {
-                            // Toggle selection logic
-                            selectedCandidateId = if (selectedCandidateId == candidate.id) null else candidate.id
+                            selectedCandidates = selectedCandidates.toMutableMap().apply {
+                                put(selectedPosition, candidate.id)
+                            }
                         }
                     )
                 }
             }
 
             // 4. Submit Button
+            val allSelected = positions.all { selectedCandidates[it] != null }
+            
             Button(
                 onClick = { showDialog = true },
-                enabled = selectedCandidateId != null,
+                enabled = allSelected,
                 modifier = Modifier.fillMaxWidth().height(60.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -176,15 +193,21 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
                     disabledContainerColor = Color.LightGray
                 )
             ) {
-                Text("Submit Vote", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(
+                    if (allSelected) "Submit All Votes" else "Complete Selections (${selectedCandidates.size}/3)",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
 
             Text(
-                "You can only vote once per position",
+                "Selections: ${selectedCandidates.size} of 3 sections completed",
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 13.sp,
-                color = Color.Gray
+                color = if (allSelected) Color(0xFF2E7D32) else Color.Gray,
+                fontWeight = if (allSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
     }

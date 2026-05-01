@@ -37,10 +37,12 @@ class CandidateViewModel(
         _currentPosition.value = position
     }
 
-    fun confirmVote(candidateId: Int, regNo: String, onComplete: () -> Unit) {
+    fun confirmVotes(candidateIds: List<Int>, regNo: String, onComplete: () -> Unit) {
         viewModelScope.launch {
-            // 1. Increment the vote in the database
-            candidateRepository.castVote(candidateId)
+            // 1. Increment the votes in the database
+            candidateIds.forEach { id ->
+                candidateRepository.castVote(id)
+            }
             
             // 2. Mark user as voted
             userRepository.markUserAsVoted(regNo)
