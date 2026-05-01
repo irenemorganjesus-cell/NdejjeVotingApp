@@ -19,13 +19,10 @@ import androidx.navigation.NavController
 
 @Composable
 fun VoteSuccessScreen(navController: NavController) {
-    val ndejjeDarkBlue = Color(0xFF001F3F)
-    val faintWhite = Color(0xB3FFFFFF) // White with 70% opacity
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ndejjeDarkBlue)
+            .background(MaterialTheme.colorScheme.primary)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -42,7 +39,7 @@ fun VoteSuccessScreen(navController: NavController) {
         // 2. Main Heading
         Text(
             text = "Vote Submitted",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold
         )
@@ -52,14 +49,14 @@ fun VoteSuccessScreen(navController: NavController) {
         // 3. Faint Thank You Message
         Text(
             text = "Thank you for voting.",
-            color = faintWhite,
+            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
             fontSize = 18.sp
         )
 
         // 4. Success Subtext
         Text(
             text = "Your vote has been recorded successfully.",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 20.dp)
@@ -92,8 +89,8 @@ fun VoteSuccessScreen(navController: NavController) {
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = ndejjeDarkBlue
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text(

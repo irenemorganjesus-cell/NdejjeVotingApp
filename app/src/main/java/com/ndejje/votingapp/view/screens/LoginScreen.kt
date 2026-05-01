@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
-import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import com.ndejje.votingapp.ui.theme.AlertRed
+import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import com.ndejje.votingapp.viewmodel.AuthViewModel
 import com.ndejje.votingapp.viewmodel.AuthResult
 
@@ -49,7 +50,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White).padding(dimensionResource(R.dimen.padding_standard_size)),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(dimensionResource(R.dimen.padding_standard_size)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_padding)))
@@ -60,8 +61,8 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
         )
 
-        Text(stringResource(R.string.login_welcome), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = NdejjeDarkBlue)
-        Text(stringResource(R.string.login_subtitle), color = Color.Gray)
+        Text(stringResource(R.string.login_welcome), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -113,13 +114,18 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
         )
 
         if (authState is AuthResult.Error) {
-            Text((authState as AuthResult.Error).message, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
+            Text(
+                text = (authState as AuthResult.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp),
+                fontWeight = FontWeight.Medium
+            )
         }
 
         // Forgot Password Link
         Text(
             text = "Forgot Password?",
-            color = NdejjeDarkBlue,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.End)
@@ -127,15 +133,12 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                 .clickable { navController.navigate("forgot_password") }
         )
 
-        Button(
+        NdejjePrimaryButton(
+            text = stringResource(R.string.btn_login),
             onClick = { viewModel.loginUser(regNo, password) },
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp).height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue),
+            modifier = Modifier.padding(top = 24.dp),
             enabled = authState !is AuthResult.Loading
-        ) {
-            if (authState is AuthResult.Loading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-            else Text(stringResource(R.string.btn_login))
-        }
+        )
 
         // Visible rectangular Register button
         OutlinedButton(
@@ -145,9 +148,9 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp).height(56.dp),
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            border = BorderStroke(1.dp, NdejjeDarkBlue)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
         ) {
-            Text(stringResource(R.string.btn_register), color = NdejjeDarkBlue, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.btn_register), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         }
     }
 }

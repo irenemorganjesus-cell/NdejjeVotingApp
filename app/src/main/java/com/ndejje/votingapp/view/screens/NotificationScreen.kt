@@ -1,5 +1,6 @@
 package com.ndejje.votingapp.view.screens
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.model.NotificationEntity
+import com.ndejje.votingapp.ui.theme.*
 import com.ndejje.votingapp.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +36,6 @@ import java.util.*
 @Composable
 fun NotificationScreen(navController: NavController, viewModel: NotificationViewModel) {
     val notifications by viewModel.notifications.collectAsState()
-    val ndejjeDarkBlue = Color(0xFF001F3F) // Consistent dark blue branding
 
     // Mark all as read when opening the screen
     LaunchedEffect(Unit) {
@@ -47,7 +48,7 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
                 title = {
                     Text(
                         "Notifications",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
@@ -57,7 +58,7 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
@@ -66,28 +67,28 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
                         Icon(
                             Icons.Default.Notifications,
                             contentDescription = "Notifications",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = ndejjeDarkBlue
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
             )
         },
-        containerColor = ndejjeDarkBlue
+        containerColor = MaterialTheme.colorScheme.primary
     ) { padding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(top = 8.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.background,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
             if (notifications.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No notifications yet", color = Color.Gray)
+                    Text("No notifications yet", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                 }
             } else {
                 LazyColumn(
@@ -107,18 +108,30 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
 
 @Composable
 fun NotificationItem(notification: NotificationEntity) {
-    val (icon, iconColor, bgColor) = when (notification.type) {
-        "SUCCESS" -> Triple(Icons.Default.CheckCircle, Color(0xFF4CAF50), Color(0xFFE8F5E9))
-        "ALERT" -> Triple(Icons.Default.Warning, Color(0xFFF44336), Color(0xFFFFEBEE))
-        "INFO" -> Triple(Icons.Default.Info, Color(0xFF2196F3), Color(0xFFE3F2FD))
-        "REMINDER" -> Triple(Icons.Default.Notifications, Color(0xFFFF9800), Color(0xFFFFF3E0))
-        else -> Triple(Icons.Default.Notifications, Color.Gray, Color(0xFFF5F5F5))
+    val (icon, iconColor, lightBgColor) = when (notification.type) {
+        "SUCCESS" -> Triple(Icons.Default.CheckCircle, SuccessGreen, SuccessGreenLight)
+        "ALERT" -> Triple(Icons.Default.Warning, MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.errorContainer)
+        "INFO" -> Triple(Icons.Default.Info, InfoBlue, InfoBlueLight)
+        "REMINDER" -> Triple(Icons.Default.Notifications, WarningOrange, WarningOrangeLight)
+        else -> Triple(Icons.Default.Notifications, MaterialTheme.colorScheme.outline, MaterialTheme.colorScheme.surfaceVariant)
+    }
+    
+    val semanticBgColor = if (isSystemInDarkTheme()) {
+        if (notification.type == "ALERT") MaterialTheme.colorScheme.errorContainer else iconColor.copy(alpha = 0.2f)
+    } else {
+        lightBgColor
+    }
+    
+    val semanticIconColor = if (isSystemInDarkTheme() && notification.type == "ALERT") {
+        MaterialTheme.colorScheme.onErrorContainer
+    } else {
+        iconColor
     }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Row(
@@ -128,13 +141,13 @@ fun NotificationItem(notification: NotificationEntity) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .background(bgColor, RoundedCornerShape(8.dp)),
+                    .background(semanticBgColor, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = iconColor,
+                    tint = semanticIconColor,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -146,20 +159,20 @@ fun NotificationItem(notification: NotificationEntity) {
                     text = notification.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = notification.message,
                     fontSize = 14.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     lineHeight = 20.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = formatTimestamp(notification.timestamp),
                     fontSize = 12.sp,
-                    color = Color.LightGray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                 )
             }
         }

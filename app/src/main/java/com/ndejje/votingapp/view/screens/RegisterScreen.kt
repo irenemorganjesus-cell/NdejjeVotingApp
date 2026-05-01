@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.UserEntity
-import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import com.ndejje.votingapp.ui.theme.*
+import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import com.ndejje.votingapp.viewmodel.AuthViewModel
 import com.ndejje.votingapp.viewmodel.AuthResult
 
@@ -70,9 +71,9 @@ fun RegisterScreen(
     val strengthScore = listOf(hasMinLength, hasUpper, hasLower, hasDigit, hasSymbol).count { it }
     val (strengthText, strengthColor) = when {
         password.isEmpty() -> "" to Color.Transparent
-        strengthScore <= 2 -> "Weak" to Color.Red
-        strengthScore <= 4 -> "Good" to Color(0xFFFFA500) // Orange
-        else -> "Strong" to NdejjeDarkBlue
+        strengthScore <= 2 -> "Weak" to MaterialTheme.colorScheme.error
+        strengthScore <= 4 -> "Good" to WarningOrange
+        else -> "Strong" to SuccessGreen
     }
 
     // Clear errors when typing
@@ -93,7 +94,7 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(dimensionResource(R.dimen.padding_standard_size))
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -110,12 +111,12 @@ fun RegisterScreen(
             text = stringResource(R.string.register_title),
             fontSize = 32.sp,
             fontWeight = FontWeight.Black,
-            color = NdejjeDarkBlue
+            color = MaterialTheme.colorScheme.primary
         )
 
         Text(
             text = stringResource(R.string.register_subtitle),
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium
         )
@@ -154,7 +155,7 @@ fun RegisterScreen(
                     text = stringResource(R.string.label_course),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -257,18 +258,25 @@ fun RegisterScreen(
             Checkbox(
                 checked = termsAgreed, 
                 onCheckedChange = { termsAgreed = it; onFieldChange() },
-                colors = CheckboxDefaults.colors(checkedColor = NdejjeDarkBlue)
+                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
             )
-            Text("I agree to the terms and conditions", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text("I agree to the terms and conditions", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
         }
 
         // Error display
         val errorToDisplay = validationError ?: (authState as? AuthResult.Error)?.message
         if (errorToDisplay != null) {
-            Text(errorToDisplay, color = Color.Red, fontSize = 14.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
+            Text(
+                text = errorToDisplay,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
         }
 
-        Button(
+        NdejjePrimaryButton(
+            text = stringResource(R.string.btn_sign_up),
             onClick = {
                 when {
                     regNo.isEmpty() || fullName.isEmpty() || email.isEmpty() || course.isEmpty() || password.isEmpty() -> {
@@ -299,21 +307,13 @@ fun RegisterScreen(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth().height(64.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue),
+            modifier = Modifier.height(64.dp),
             enabled = authState !is AuthResult.Loading
-        ) {
-            if (authState is AuthResult.Loading) {
-                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(28.dp))
-            } else {
-                Text(stringResource(R.string.btn_sign_up), fontWeight = FontWeight.Black, fontSize = 20.sp)
-            }
-        }
+        )
 
         val footerText = buildAnnotatedString {
-            withStyle(SpanStyle(color = Color.Gray, fontSize = 16.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = NdejjeDarkBlue, fontSize = 16.sp)) { append(stringResource(R.string.btn_login)) }
+            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), fontSize = 16.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 16.sp)) { append(stringResource(R.string.btn_login)) }
         }
         Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 24.dp))
 
@@ -332,7 +332,7 @@ private fun StandardFormInput(
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(labelRes), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.DarkGray)
+        Text(stringResource(labelRes), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,
@@ -343,10 +343,11 @@ private fun StandardFormInput(
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
+            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurface),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = NdejjeDarkBlue,
-                focusedLabelColor = NdejjeDarkBlue
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline
             )
         )
     }

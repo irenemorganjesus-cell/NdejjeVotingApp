@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
 import com.ndejje.votingapp.ui.theme.LayoutWeights
-import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
+import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 
@@ -59,7 +59,7 @@ fun WelcomeScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(dimensionResource(R.dimen.padding_standard_size)),
         horizontalAlignment = Alignment.Start
     ) {
@@ -68,7 +68,7 @@ fun WelcomeScreen(navController: NavController) {
         Text(
             text = stringResource(R.string.welcome_to),
             fontSize = dimensionResource(R.dimen.font_size_welcome).value.sp,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.fillMaxWidth()
         )
@@ -77,7 +77,7 @@ fun WelcomeScreen(navController: NavController) {
             text = stringResource(R.string.welcome_app_name),
             fontSize = dimensionResource(R.dimen.font_size_app_title).value.sp,
             lineHeight = dimensionResource(R.dimen.line_height).value.sp,
-            color = NdejjeDarkBlue,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )
@@ -86,7 +86,7 @@ fun WelcomeScreen(navController: NavController) {
 
         Text(
             text = stringResource(R.string.welcome_tagline),
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             fontSize = dimensionResource(R.dimen.faint_message_size).value.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.fillMaxWidth()
@@ -94,7 +94,7 @@ fun WelcomeScreen(navController: NavController) {
 
         Text(
             text = stringResource(R.string.welcome_motto),
-            color = Color.Gray.copy(alpha = 0.8f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             fontSize = dimensionResource(R.dimen.together_message_size).value.sp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -136,21 +136,11 @@ fun WelcomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(LayoutWeights.StandardWeight))
 
         // Register Button
-        Button(
+        NdejjePrimaryButton(
+            text = stringResource(R.string.btn_register),
             onClick = { navController.navigate("register") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(R.dimen.button_height)),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            colors = ButtonDefaults.buttonColors(containerColor = NdejjeDarkBlue)
-        ) {
-            Text(
-                text = stringResource(R.string.btn_register),
-                color = Color.White,
-                fontSize = dimensionResource(R.dimen.button_font_size).value.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+            modifier = Modifier.height(dimensionResource(R.dimen.button_height))
+        )
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_corner_radius)))
 
@@ -163,12 +153,12 @@ fun WelcomeScreen(navController: NavController) {
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
             border = androidx.compose.foundation.BorderStroke(
                 dimensionResource(R.dimen.border_width),
-                Color.LightGray
+                MaterialTheme.colorScheme.outline
             )
         ) {
             Text(
                 text = stringResource(R.string.btn_login),
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = dimensionResource(R.dimen.button_font_size).value.sp,
                 fontWeight = FontWeight.Bold
             )

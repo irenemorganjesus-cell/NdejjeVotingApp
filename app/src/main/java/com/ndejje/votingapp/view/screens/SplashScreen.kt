@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.R
-import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
-import com.ndejje.votingapp.ui.theme.NdejjeYellow
 import kotlinx.coroutines.delay
 
 @Composable
@@ -37,7 +35,7 @@ fun SplashScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NdejjeDarkBlue),
+            .background(MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -71,7 +69,7 @@ fun SplashScreen(navController: NavController) {
         //University name
         Text(
             text = stringResource(R.string.university_name),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = dimensionResource(R.dimen.font_size_title).value.sp,
             fontWeight = FontWeight.Bold
         )
@@ -79,7 +77,7 @@ fun SplashScreen(navController: NavController) {
         //System name
         Text(
             text = stringResource(R.string.system_name),
-            color = NdejjeYellow,
+            color = MaterialTheme.colorScheme.secondary,
             fontSize = dimensionResource(R.dimen.font_size_subtitle).value.sp,
             fontWeight = FontWeight.Medium
         )
@@ -89,7 +87,7 @@ fun SplashScreen(navController: NavController) {
         //motto
         Text(
             text = stringResource(R.string.motto),
-            color = Color.White.copy(alpha = 0.7f),
+            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
             fontSize = dimensionResource(R.dimen.font_size_body).value.sp,
             fontWeight = FontWeight.Light
         )
@@ -97,7 +95,7 @@ fun SplashScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.loading_indicator_spacing)))
 
         CircularProgressIndicator(
-            color = NdejjeYellow,
+            color = MaterialTheme.colorScheme.secondary,
             strokeWidth = dimensionResource(R.dimen.indicator_stroke).value.dp
         )
 
@@ -106,7 +104,7 @@ fun SplashScreen(navController: NavController) {
 
         Text(
             text = stringResource(R.string.loading_text),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = dimensionResource(R.dimen.font_size_body).value.sp,
             fontWeight = FontWeight.Normal
         )

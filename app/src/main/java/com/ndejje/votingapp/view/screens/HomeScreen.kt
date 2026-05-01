@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ndejje.votingapp.view.components.BottomNavigationBar
+import com.ndejje.votingapp.view.components.NdejjeQuickActionCard
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
@@ -32,11 +33,6 @@ fun HomeScreen(
     candidateViewModel: com.ndejje.votingapp.viewmodel.CandidateViewModel,
     notificationViewModel: com.ndejje.votingapp.viewmodel.NotificationViewModel
 ) {
-    // Defined colors based on your branding requirements
-    val ndejjeDarkBlue = Color(0xFF001F3F)
-    val lightBlueAccent = Color(0xFFE3F2FD)
-    val pearlWhite = Color(0xFFF5F5F5)
-
     val totalVotes by candidateViewModel.totalVotes.collectAsState()
     val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
     val unreadCount by notificationViewModel.unreadCount.collectAsState()
@@ -70,13 +66,13 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             // --- HEADER SECTION ---
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(lightBlueAccent)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(horizontal = 20.dp, vertical = 24.dp)
             ) {
                 Row(
@@ -88,7 +84,7 @@ fun HomeScreen(
                         text = "Hello, $userName 👋",
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color = ndejjeDarkBlue
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Box {
                         IconButton(
@@ -97,13 +93,13 @@ fun HomeScreen(
                                 navController.navigate("notifications") 
                             },
                             modifier = Modifier
-                                .background(ndejjeDarkBlue, CircleShape)
+                                .background(MaterialTheme.colorScheme.primary, CircleShape)
                                 .size(44.dp)
                         ) {
                             Icon(
                                 Icons.Default.Notifications,
                                 contentDescription = "Notifications",
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(28.dp)
                             )
                         }
@@ -111,9 +107,9 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .size(12.dp)
-                                    .background(Color.Red, CircleShape)
+                                    .background(MaterialTheme.colorScheme.error, CircleShape)
                                     .align(Alignment.TopEnd)
-                                    .border(2.dp, lightBlueAccent, CircleShape)
+                                    .border(2.dp, MaterialTheme.colorScheme.primaryContainer, CircleShape)
                             )
                         }
                     }
@@ -121,7 +117,7 @@ fun HomeScreen(
                 Text(
                     text = "Ready to make a difference today?",
                     fontSize = 16.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -132,20 +128,23 @@ fun HomeScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = ndejjeDarkBlue),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("NDEJJE UNIVERSITY", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        Text("STUDENT LEADERSHIP", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                        Text("ELECTIONS 2026", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        Text("NDEJJE UNIVERSITY", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Text("STUDENT LEADERSHIP", color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        Text("ELECTIONS 2026", color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             "Your Vote Shapes Our Tomorrow",
-                            color = Color(0xFFBBDEFB),
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                             fontSize = 13.sp,
                             fontStyle = FontStyle.Italic,
                             fontWeight = FontWeight.Medium,
@@ -161,18 +160,18 @@ fun HomeScreen(
                     "Quick Actions",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = ndejjeDarkBlue
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    QuickActionCard("Vote", "Cast your Vote", Icons.Default.HowToVote, Modifier.weight(1f), ndejjeDarkBlue) {
+                    NdejjeQuickActionCard("Vote", "Cast your Vote", Icons.Default.HowToVote, Modifier.weight(1f)) {
                         navController.navigate("vote")
                     }
-                    QuickActionCard("Results", "view live results", Icons.Default.BarChart, Modifier.weight(1f), ndejjeDarkBlue) {
+                    NdejjeQuickActionCard("Results", "view live results", Icons.Default.BarChart, Modifier.weight(1f)) {
                         navController.navigate("results")
                     }
-                    QuickActionCard("Profile", "My information", Icons.Default.Person, Modifier.weight(1f), ndejjeDarkBlue) {
+                    NdejjeQuickActionCard("Profile", "My information", Icons.Default.Person, Modifier.weight(1f)) {
                         navController.navigate("profile")
                     }
                 }
@@ -184,27 +183,27 @@ fun HomeScreen(
                     text = "Election Status",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = pearlWhite),
-                    border = BorderStroke(1.dp, ndejjeDarkBlue.copy(alpha = 0.1f))
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Voting is Currently Active",
-                            color = ndejjeDarkBlue, // Updated to Dark Blue as requested
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Ends in: $timeLeft",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -212,20 +211,20 @@ fun HomeScreen(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
                     text = "Total Votes: $totalVotes",
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 22.sp,
-                    color = ndejjeDarkBlue
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Text(
                     text = "Last updated: $lastVoteTime",
                     fontSize = 14.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -234,42 +233,3 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun QuickActionCard(title: String, subtitle: String, icon: ImageVector, modifier: Modifier, darkBlue: Color, onClick: () -> Unit) {
-    Card(
-        modifier = modifier
-            .height(115.dp)
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(2.dp),
-        border = BorderStroke(1.dp, darkBlue.copy(alpha = 0.1f))
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = darkBlue,
-                modifier = Modifier.size(32.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
-            Text(
-                subtitle,
-                fontSize = 11.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Gray.copy(alpha = 0.8f),
-                lineHeight = 13.sp
-            )
-        }
-    }
-}

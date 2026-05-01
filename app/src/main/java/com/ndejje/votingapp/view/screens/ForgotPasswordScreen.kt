@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import com.ndejje.votingapp.viewmodel.AuthResult
 import com.ndejje.votingapp.viewmodel.AuthViewModel
 
@@ -28,8 +29,6 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
     var email by remember { mutableStateOf("") }
     val authState by viewModel.authState.collectAsState()
     val context = LocalContext.current
-    val ndejjeDarkBlue = Color(0xFF001F3F)
-    val lightBlueBg = Color(0xFFF0F4F8)
 
     LaunchedEffect(authState) {
         if (authState is AuthResult.Success) {
@@ -43,7 +42,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
     }
 
     Scaffold(
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -57,13 +56,13 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
             Box(
                 modifier = Modifier
                     .size(80.dp)
-                    .background(ndejjeDarkBlue.copy(alpha = 0.1f), CircleShape),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.MarkEmailRead,
                     contentDescription = null,
-                    tint = ndejjeDarkBlue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -74,7 +73,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
                 text = "Reset Password",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = ndejjeDarkBlue
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -82,7 +81,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
             Text(
                 text = "Enter your university email to receive your password recovery details.",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -95,7 +94,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
                 modifier = Modifier.fillMaxWidth(),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
-                color = ndejjeDarkBlue
+                color = MaterialTheme.colorScheme.primary
             )
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -107,8 +106,8 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ndejjeDarkBlue,
-                    unfocusedBorderColor = Color.LightGray
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
                 ),
                 singleLine = true
             )
@@ -116,7 +115,8 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
             Spacer(modifier = Modifier.height(24.dp))
 
             // Reset Button
-            Button(
+            NdejjePrimaryButton(
+                text = "Send Password",
                 onClick = {
                     if (email.isNotBlank()) {
                         viewModel.recoverPassword(email)
@@ -124,27 +124,22 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
                         Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue)
-            ) {
-                if (authState is AuthResult.Loading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
-                    Text("Send Password", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
-            }
+                isLoading = authState is AuthResult.Loading
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             // Back to Login
             TextButton(onClick = { navController.popBackStack() }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack, 
+                        contentDescription = null, 
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Back to Login", color = ndejjeDarkBlue, fontWeight = FontWeight.SemiBold)
+                    Text("Back to Login", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                 }
             }
 
@@ -153,7 +148,7 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
             // Footer Privacy Box
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = lightBlueBg),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Row(
@@ -163,14 +158,14 @@ fun ForgotPasswordScreen(navController: NavController, viewModel: AuthViewModel)
                     Icon(
                         imageVector = Icons.Default.Lock,
                         contentDescription = null,
-                        tint = ndejjeDarkBlue.copy(alpha = 0.6f),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                         modifier = Modifier.size(32.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = "Secure and private. We'll never share your information.",
                         fontSize = 13.sp,
-                        color = Color.DarkGray,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Medium
                     )
                 }

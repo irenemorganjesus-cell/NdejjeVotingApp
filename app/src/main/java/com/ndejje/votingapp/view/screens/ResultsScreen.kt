@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
 import com.ndejje.votingapp.view.components.BottomNavigationBar
 import com.ndejje.votingapp.viewmodel.CandidateViewModel
 
@@ -45,7 +44,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
     }
 
     Scaffold(
-        containerColor = NdejjeDarkBlue,
+        containerColor = MaterialTheme.colorScheme.primary,
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         Column(
@@ -65,7 +64,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back to Home",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Column(modifier = Modifier.padding(start = 8.dp)) {
@@ -73,12 +72,12 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                         text = "Election Results",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
                         text = "Live Updates",
                         fontSize = 16.sp,
-                        color = Color.White.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -91,7 +90,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
             ) {
                 Column(
@@ -103,7 +102,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                     Text(
                         text = "Select Position",
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     
@@ -121,19 +120,20 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                             shape = RoundedCornerShape(12.dp),
                             colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color(0xFFF5F5F5),
-                                unfocusedContainerColor = Color(0xFFF5F5F5),
-                                focusedIndicatorColor = NdejjeDarkBlue,
-                                unfocusedIndicatorColor = Color.LightGray
+                                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline
                             )
                         )
                         ExposedDropdownMenu(
                             expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                         ) {
                             positions.forEach { position ->
                                 DropdownMenuItem(
-                                    text = { Text(position) },
+                                    text = { Text(position, color = MaterialTheme.colorScheme.onSurface) },
                                     onClick = {
                                         selectedPosition = position
                                         expanded = false
@@ -148,7 +148,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                     // Candidates Results
                     if (currentResults.isEmpty()) {
                         Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
-                            Text("No candidates found for this position", color = Color.Gray)
+                            Text("No candidates found for this position", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                         }
                     } else {
                         currentResults.forEach { candidate ->
@@ -159,13 +159,13 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
 
                     Spacer(modifier = Modifier.weight(1f))
                     
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color.LightGray)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                     
                     Text(
                         text = "Total Votes: $totalVotesForPosition",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = NdejjeDarkBlue
+                        color = MaterialTheme.colorScheme.primary
                     )
                     
                     val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
@@ -173,7 +173,7 @@ fun ResultsScreen(navController: NavController, candidateViewModel: CandidateVie
                     Text(
                         text = "Last updated: $lastVoteTime",
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -193,12 +193,12 @@ fun CandidateResultItem(candidate: CandidateResult) {
                 text = candidate.name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = "${candidate.votes} votes",
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
         }
         
@@ -212,13 +212,13 @@ fun CandidateResultItem(candidate: CandidateResult) {
                 modifier = Modifier
                     .weight(1f)
                     .height(16.dp)
-                    .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(candidate.percentage / 100f)
                         .fillMaxHeight()
-                        .background(NdejjeDarkBlue, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -226,7 +226,7 @@ fun CandidateResultItem(candidate: CandidateResult) {
                 text = "${candidate.percentage.toInt()}%",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Black,
-                color = NdejjeDarkBlue
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

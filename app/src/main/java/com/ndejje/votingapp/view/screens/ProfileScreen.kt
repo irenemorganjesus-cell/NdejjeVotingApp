@@ -26,7 +26,6 @@ import coil3.compose.AsyncImage
 
 @Composable
 fun ProfileScreen(navController: NavController, user: UserEntity?) {
-    val ndejjeDarkBlue = Color(0xFF001F3F)
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -36,7 +35,7 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -47,7 +46,7 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 if (user?.profilePictureUri != null) {
@@ -61,7 +60,7 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(60.dp)
                     )
                 }
@@ -73,13 +72,13 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                 text = user?.fullName ?: "Grace",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = ndejjeDarkBlue
+                color = MaterialTheme.colorScheme.primary
             )
 
             Text(
                 text = user?.registrationNumber ?: "23/2/314/D/001",
                 fontSize = 15.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 fontWeight = FontWeight.Medium
             )
 
@@ -90,26 +89,26 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 elevation = CardDefaults.cardElevation(1.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     ProfileInfoRow("Course", user?.course ?: "B.IT")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color.LightGray.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                     
                     ProfileInfoRow("Year of Study", "Year ${user?.yearOfStudy ?: "1"}")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color.LightGray.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                     
                     ProfileInfoRow("Campus", user?.campus ?: "Kampala Campus")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color.LightGray.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                     
                     val emailDisplay = user?.email?.let { if (it.isEmpty()) "Not set" else it } ?: "Not set"
                     ProfileInfoRow("Email", emailDisplay)
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color.LightGray.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                     
                     val phoneDisplay = user?.phoneNumber?.let { if (it.isEmpty()) "Not set" else it } ?: "Not set"
                     ProfileInfoRow("Phone", phoneDisplay)
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = Color.LightGray.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
 
                     ProfileInfoRow("Voting Status", if (user?.hasVoted == true) "Voted" else "Not Voted")
                 }
@@ -125,11 +124,11 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                     .padding(horizontal = 24.dp)
                     .height(48.dp),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, ndejjeDarkBlue)
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
-                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp), tint = ndejjeDarkBlue)
+                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Edit Profile", fontSize = 16.sp, color = ndejjeDarkBlue, fontWeight = FontWeight.SemiBold)
+                Text("Edit Profile", fontSize = 16.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -144,10 +143,10 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
             ) {
-                Text("Logout", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Logout", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -161,7 +160,7 @@ fun ProfileInfoRow(label: String, value: String) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontSize = 16.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
-        Text(text = value, fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.SemiBold)
+        Text(text = label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), fontWeight = FontWeight.Medium)
+        Text(text = value, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
     }
 }

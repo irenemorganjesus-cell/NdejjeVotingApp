@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.ndejje.votingapp.model.UserEntity
+import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import com.ndejje.votingapp.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,6 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
     var yearOfStudy by remember { mutableStateOf(user?.yearOfStudy ?: "") }
     var profilePictureUri by remember { mutableStateOf(user?.profilePictureUri) }
 
-    val ndejjeDarkBlue = Color(0xFF001F3F)
     val scrollState = rememberScrollState()
 
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
@@ -84,8 +84,8 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFF0F0F0))
-                    .border(2.dp, ndejjeDarkBlue, CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
                     .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
@@ -101,10 +101,15 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                         Icon(
                             imageVector = Icons.Default.AddAPhoto,
                             contentDescription = null,
-                            tint = ndejjeDarkBlue,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(32.dp)
                         )
-                        Text("Photo", fontSize = 12.sp, color = ndejjeDarkBlue, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Photo",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -225,7 +230,8 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Button(
+            NdejjePrimaryButton(
+                text = "Save Changes",
                 onClick = {
                     user?.let {
                         val updatedUser = it.copy(
@@ -240,15 +246,8 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                         viewModel.updateUser(updatedUser)
                         navController.popBackStack()
                     }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ndejjeDarkBlue)
-            ) {
-                Text("Save Changes", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
+                }
+            )
         }
     }
 }
