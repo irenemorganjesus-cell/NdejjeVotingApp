@@ -19,9 +19,9 @@ A modern, secure, and inclusive mobile voting application designed specifically 
 - **Language**: Kotlin
 - **Dependency Management**: Version Catalogs (libs.versions.toml)
 - **Testing**: 
-    - **Unit Testing**: MockK & Turbine
-    - **UI Testing**: ComposeTestRule
-    - **Integration Testing**: Room In-Memory Database tests
+    - **Unit Testing**: MockK & Turbine - proves the Logic is right.
+    - **UI Testing**: ComposeTestRule - proves the Buttons work.
+    - **Integration Testing**: Room In-Memory Database tests - proves the Data is safe.
 
 Test Summary (QA Report)
 
