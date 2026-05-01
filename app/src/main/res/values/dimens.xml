@@ -93,4 +93,36 @@
     <dimen name="edit_icon_size">18dp</dimen>
     <dimen name="profile_top_spacer">30dp</dimen>
 
+    <!-- Results Screen -->
+    <dimen name="results_header_padding">16dp</dimen>
+    <dimen name="results_content_padding">24dp</dimen>
+    <dimen name="results_card_radius">32dp</dimen>
+    <dimen name="chart_size">200dp</dimen>
+    <dimen name="chart_thickness">24dp</dimen>
+    <dimen name="progress_bar_height">16dp</dimen>
+    <dimen name="progress_bar_radius">8dp</dimen>
+    <dimen name="candidate_item_spacing">20dp</dimen>
+
+    <!-- Vote Screen -->
+    <dimen name="vote_tab_height">48dp</dimen>
+    <dimen name="vote_tab_spacing">8dp</dimen>
+    <dimen name="vote_tab_font_size">10sp</dimen>
+    <dimen name="vote_candidate_card_elevation">4dp</dimen>
+    <dimen name="vote_candidate_image_size">85dp</dimen>
+    <dimen name="vote_submit_button_height">60dp</dimen>
+    <dimen name="vote_selection_circle_size">30dp</dimen>
+    <dimen name="vote_selection_inner_circle_size">16dp</dimen>
+
+    <!-- Notification Screen -->
+    <dimen name="notification_surface_radius">32dp</dimen>
+    <dimen name="notification_item_spacing">16dp</dimen>
+    <dimen name="notification_icon_box_size">48dp</dimen>
+    <dimen name="notification_icon_box_radius">8dp</dimen>
+    <dimen name="notification_item_elevation">2dp</dimen>
+
+    <!-- Vote Success Screen -->
+    <dimen name="success_icon_size">100dp</dimen>
+    <dimen name="success_image_height">200dp</dimen>
+    <dimen name="success_bottom_spacer">60dp</dimen>
+
 </resources>

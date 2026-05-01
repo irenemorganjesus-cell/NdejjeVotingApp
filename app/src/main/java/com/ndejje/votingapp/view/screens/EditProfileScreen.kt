@@ -25,7 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import coil3.compose.AsyncImage
+import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.view.components.NdejjePrimaryButton
 import com.ndejje.votingapp.viewmodel.AuthViewModel
@@ -60,10 +63,10 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Edit Profile", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.edit_profile_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button_desc))
                     }
                 }
             )
@@ -73,26 +76,26 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = dimensionResource(R.dimen.padding_standard))
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_standard)))
 
             // Profile Picture Picker
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(dimensionResource(R.dimen.logo_size_register))
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .border(dimensionResource(R.dimen.logo_border_thickness), MaterialTheme.colorScheme.primary, CircleShape)
                     .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
                 if (profilePictureUri != null) {
                     AsyncImage(
                         model = profilePictureUri,
-                        contentDescription = "Profile Picture",
+                        contentDescription = stringResource(R.string.profile_picture_desc),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -105,7 +108,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                             modifier = Modifier.size(32.dp)
                         )
                         Text(
-                            "Photo",
+                            stringResource(R.string.edit_profile_photo_label),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
@@ -114,17 +117,17 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_standard)))
 
             OutlinedTextField(
                 value = fullName,
                 onValueChange = { fullName = it },
-                label = { Text("Full Name") },
+                label = { Text(stringResource(R.string.label_full_name)) },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
             // Course Dropdown
             ExposedDropdownMenuBox(
@@ -135,11 +138,11 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 OutlinedTextField(
                     value = course,
                     onValueChange = {},
-                    label = { Text("Course") },
+                    label = { Text(stringResource(R.string.label_course)) },
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = courseExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
                 )
                 ExposedDropdownMenu(expanded = courseExpanded, onDismissRequest = { courseExpanded = false }) {
@@ -152,7 +155,7 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
             // Year Dropdown
             ExposedDropdownMenuBox(
@@ -163,24 +166,24 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 OutlinedTextField(
                     value = yearOfStudy,
                     onValueChange = {},
-                    label = { Text("Year of Study") },
+                    label = { Text(stringResource(R.string.label_year_of_study)) },
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = yearExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
                 )
                 ExposedDropdownMenu(expanded = yearExpanded, onDismissRequest = { yearExpanded = false }) {
                     years.forEach { selection ->
                         DropdownMenuItem(
-                            text = { Text("Year $selection") },
+                            text = { Text(stringResource(R.string.label_year_format, selection)) },
                             onClick = { yearOfStudy = selection; yearExpanded = false }
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
             // Campus Dropdown
             ExposedDropdownMenuBox(
@@ -191,11 +194,11 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 OutlinedTextField(
                     value = campus,
                     onValueChange = {},
-                    label = { Text("Campus") },
+                    label = { Text(stringResource(R.string.label_campus)) },
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = campusExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
                 )
                 ExposedDropdownMenu(expanded = campusExpanded, onDismissRequest = { campusExpanded = false }) {
@@ -208,30 +211,30 @@ fun EditProfileScreen(navController: NavController, viewModel: AuthViewModel, us
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("University Email") },
+                label = { Text(stringResource(R.string.label_email)) },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { phoneNumber = it },
-                label = { Text("Phone Number") },
+                label = { Text(stringResource(R.string.label_phone)) },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
 
             NdejjePrimaryButton(
-                text = "Save Changes",
+                text = stringResource(R.string.edit_profile_btn_save),
                 onClick = {
                     user?.let {
                         val updatedUser = it.copy(

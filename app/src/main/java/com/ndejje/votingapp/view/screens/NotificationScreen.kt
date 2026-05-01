@@ -26,6 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.NotificationEntity
 import com.ndejje.votingapp.ui.theme.*
 import com.ndejje.votingapp.viewmodel.NotificationViewModel
@@ -47,17 +50,17 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Notifications",
+                        stringResource(R.string.notifications_title),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = dimensionResource(R.dimen.font_size_h5).value.sp
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back_button_desc),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -66,7 +69,7 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
                     IconButton(onClick = { /* Settings? */ }) {
                         Icon(
                             Icons.Default.Notifications,
-                            contentDescription = "Notifications",
+                            contentDescription = stringResource(R.string.notifications_title),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -82,20 +85,20 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(top = 8.dp),
+                .padding(top = dimensionResource(R.dimen.padding_small)),
             color = MaterialTheme.colorScheme.background,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+            shape = RoundedCornerShape(topStart = dimensionResource(R.dimen.notification_surface_radius), topEnd = dimensionResource(R.dimen.notification_surface_radius))
         ) {
             if (notifications.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No notifications yet", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+                    Text(stringResource(R.string.notifications_empty), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                 }
             } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(horizontal = dimensionResource(R.dimen.padding_medium), vertical = dimensionResource(R.dimen.home_header_padding_vertical)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.notification_item_spacing))
                 ) {
                     items(notifications) { notification ->
                         NotificationItem(notification)
@@ -130,18 +133,18 @@ fun NotificationItem(notification: NotificationEntity) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.card_corner_radius)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(2.dp)
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.notification_item_elevation))
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.Top
         ) {
             Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .background(semanticBgColor, RoundedCornerShape(8.dp)),
+                    .size(dimensionResource(R.dimen.notification_icon_box_size))
+                    .background(semanticBgColor, RoundedCornerShape(dimensionResource(R.dimen.notification_icon_box_radius))),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -152,26 +155,26 @@ fun NotificationItem(notification: NotificationEntity) {
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_medium)))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = notification.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    fontSize = dimensionResource(R.dimen.font_size_large).value.sp,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
                 Text(
                     text = notification.message,
-                    fontSize = 14.sp,
+                    fontSize = dimensionResource(R.dimen.font_size_medium).value.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     lineHeight = 20.sp
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
                 Text(
                     text = formatTimestamp(notification.timestamp),
-                    fontSize = 12.sp,
+                    fontSize = dimensionResource(R.dimen.font_size_small).value.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                 )
             }
@@ -179,6 +182,7 @@ fun NotificationItem(notification: NotificationEntity) {
     }
 }
 
+@Composable
 fun formatTimestamp(timestamp: Long): String {
     val diff = System.currentTimeMillis() - timestamp
     val seconds = diff / 1000
@@ -187,9 +191,9 @@ fun formatTimestamp(timestamp: Long): String {
     val days = hours / 24
 
     return when {
-        days > 0 -> "$days day${if (days > 1) "s" else ""} ago"
-        hours > 0 -> "$hours hour${if (hours > 1) "s" else ""} ago"
-        minutes > 0 -> "$minutes minute${if (minutes > 1) "s" else ""} ago"
-        else -> "Just now"
+        days > 0 -> stringResource(if (days > 1) R.string.notification_time_days else R.string.notification_time_day, days.toInt())
+        hours > 0 -> stringResource(if (hours > 1) R.string.notification_time_hours else R.string.notification_time_hour, hours.toInt())
+        minutes > 0 -> stringResource(if (minutes > 1) R.string.notification_time_minutes else R.string.notification_time_minute, minutes.toInt())
+        else -> stringResource(R.string.notification_time_just_now)
     }
 }

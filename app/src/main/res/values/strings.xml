@@ -107,4 +107,57 @@
     <string name="home_time_left_format">%1$d days and %2$d hours</string>
     <string name="notifications_title">Notifications</string>
 
+    <!-- Results Screen -->
+    <string name="results_title">Election Results</string>
+    <string name="results_subtitle">Live Updates</string>
+    <string name="label_select_position">Select Position</string>
+    <string name="error_no_candidates">No candidates found for this position</string>
+    <string name="label_total_votes_format">Total Votes: %1$d</string>
+    <string name="label_last_updated_format">Last updated: %1$s</string>
+    <string name="results_back_desc">Back to Home</string>
+    <string name="results_chart_desc">Election results distribution chart</string>
+    <string name="label_votes">Votes</string>
+    <string name="label_votes_count">%1$d votes</string>
+
+    <!-- Vote Screen -->
+    <string name="vote_title">Cast Your Vote</string>
+    <string name="vote_subtitle">Complete all sections to submit</string>
+    <string name="vote_already_voted">You have already voted!</string>
+    <string name="vote_confirm_title">Confirm Your Votes</string>
+    <string name="vote_confirm_message">Are you sure you want to submit your choices for all positions?</string>
+    <string name="vote_confirm_section_completed">• %1$s section completed</string>
+    <string name="vote_btn_submit_all">SUBMIT ALL</string>
+    <string name="vote_btn_cancel">CANCEL</string>
+    <string name="vote_current_position">Voting for: %1$s</string>
+    <string name="vote_btn_submit_final">Submit All Votes</string>
+    <string name="vote_btn_complete_selections">Complete Selections (%1$d/3)</string>
+    <string name="vote_selections_summary">Selections: %1$d of 3 sections completed</string>
+    <string name="vote_candidate_image_desc">%1$s\'s Profile</string>
+    <string name="vote_pos_guild_president">Guild President</string>
+    <string name="vote_pos_guild_speaker">Guild Speaker</string>
+    <string name="vote_pos_grc">GRC</string>
+
+    <!-- Notification Screen -->
+    <string name="notifications_empty">No notifications yet</string>
+    <string name="notification_time_just_now">Just now</string>
+    <string name="notification_time_minute">%1$d minute ago</string>
+    <string name="notification_time_minutes">%1$d minutes ago</string>
+    <string name="notification_time_hour">%1$d hour ago</string>
+    <string name="notification_time_hours">%1$d hours ago</string>
+    <string name="notification_time_day">%1$d day ago</string>
+    <string name="notification_time_days">%1$d days ago</string>
+
+    <!-- Vote Success Screen -->
+    <string name="success_title">Vote Submitted</string>
+    <string name="success_thank_you">Thank you for voting.</string>
+    <string name="success_message">Your vote has been recorded successfully.</string>
+    <string name="success_btn_home">Back to Home</string>
+    <string name="success_tick_desc">Success Tick</string>
+    <string name="success_ballot_box_desc">Ballot Box</string>
+
+    <!-- Edit Profile Screen -->
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="edit_profile_photo_label">Photo</string>
+    <string name="edit_profile_btn_save">Save Changes</string>
+
 </resources>
