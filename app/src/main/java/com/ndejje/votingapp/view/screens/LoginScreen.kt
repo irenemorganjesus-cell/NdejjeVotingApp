@@ -62,13 +62,13 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back_button_desc),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
         Image(
             painter = painterResource(id = R.drawable.university_logo),
@@ -76,10 +76,18 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             modifier = Modifier.size(dimensionResource(R.dimen.logo_size_small))
         )
 
-        Text(stringResource(R.string.login_welcome), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Text(stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+        Text(
+            stringResource(R.string.login_welcome),
+            fontSize = dimensionResource(R.dimen.font_size_h3).value.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            stringResource(R.string.login_subtitle),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+        )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
 
         OutlinedTextField(
             value = regNo,
@@ -92,7 +100,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius))
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
         OutlinedTextField(
             value = password,
@@ -101,7 +109,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                 viewModel.resetState() // Clear error on type
             },
             label = { Text(stringResource(R.string.label_password)) },
-            placeholder = { Text("********") },
+            placeholder = { Text(stringResource(R.string.password_placeholder)) },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             leadingIcon = { Icon(Icons.Default.Lock, null) },
@@ -110,7 +118,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                     imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(dimensionResource(R.dimen.dropdown_arrow_size))
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onPress = {
@@ -132,26 +140,26 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             Text(
                 text = (authState as AuthResult.Error).message,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_extra_small)),
                 fontWeight = FontWeight.Medium
             )
         }
 
         // Forgot Password Link
         Text(
-            text = "Forgot Password?",
+            text = stringResource(R.string.link_forgot_password),
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.End)
-                .padding(top = 8.dp)
+                .padding(top = dimensionResource(R.dimen.padding_extra_small))
                 .clickable { navController.navigate("forgot_password") }
         )
 
         NdejjePrimaryButton(
             text = stringResource(R.string.btn_login),
             onClick = { viewModel.loginUser(regNo, password) },
-            modifier = Modifier.padding(top = 24.dp),
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_standard)),
             enabled = authState !is AuthResult.Loading
         )
 
@@ -161,11 +169,19 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                 viewModel.resetState()
                 navController.navigate("register") 
             },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp).height(56.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(R.dimen.padding_medium))
+                .height(dimensionResource(R.dimen.button_height)),
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+            border = BorderStroke(dimensionResource(R.dimen.border_width), MaterialTheme.colorScheme.primary)
         ) {
-            Text(stringResource(R.string.btn_register), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.btn_register),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
         }
+
     }
 }

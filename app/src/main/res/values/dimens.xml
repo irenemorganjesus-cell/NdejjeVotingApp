@@ -45,12 +45,52 @@
     <dimen name="footer_space">16dp</dimen>
 
 <!--Register screen-->
+    <dimen name="logo_size_register">100dp</dimen>
     <dimen name="font_size_title_header">28sp</dimen>
     <dimen name="font_size_body_1">20sp</dimen>
 
     <dimen name="dropdown_arrow_size">24dp</dimen>
     <dimen name="form_elements_margin_top">12dp</dimen>
 
+    <!-- Generic Dimens -->
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_extra_small">4dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="corner_radius_large">20dp</dimen>
+    <dimen name="corner_radius_medium">16dp</dimen>
+    <dimen name="elevation_small">4dp</dimen>
 
+    <!-- Font Sizes -->
+    <dimen name="font_size_h1">32sp</dimen>
+    <dimen name="font_size_h2">26sp</dimen>
+    <dimen name="font_size_h3">24sp</dimen>
+    <dimen name="font_size_h4">22sp</dimen>
+    <dimen name="font_size_h5">20sp</dimen>
+    <dimen name="font_size_h6">18sp</dimen>
+    <dimen name="font_size_large">16sp</dimen>
+    <dimen name="font_size_medium">14sp</dimen>
+    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_caption">13sp</dimen>
+
+    <!-- Home Screen Specific -->
+    <dimen name="home_header_padding_vertical">24dp</dimen>
+    <dimen name="home_header_padding_horizontal">20dp</dimen>
+    <dimen name="notification_icon_button_size">44dp</dimen>
+    <dimen name="notification_icon_size">28dp</dimen>
+    <dimen name="notification_badge_size">12dp</dimen>
+    <dimen name="notification_badge_border">2dp</dimen>
+    <dimen name="home_card_inner_padding">24dp</dimen>
+    <dimen name="home_action_grid_spacing">10dp</dimen>
+
+    <!-- Profile Screen -->
+    <dimen name="profile_pic_size">120dp</dimen>
+    <dimen name="profile_pic_icon_size">60dp</dimen>
+    <dimen name="profile_info_padding">16dp</dimen>
+    <dimen name="profile_info_spacing">10dp</dimen>
+    <dimen name="edit_icon_size">18dp</dimen>
+    <dimen name="profile_top_spacer">30dp</dimen>
 
 </resources>

@@ -60,6 +60,7 @@ fun RegisterScreen(
     val authState by viewModel.authState.collectAsState()
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
     var expanded by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     // Password criteria logic
     val hasMinLength = password.length >= 8
@@ -71,9 +72,9 @@ fun RegisterScreen(
     val strengthScore = listOf(hasMinLength, hasUpper, hasLower, hasDigit, hasSymbol).count { it }
     val (strengthText, strengthColor) = when {
         password.isEmpty() -> "" to Color.Transparent
-        strengthScore <= 2 -> "Weak" to MaterialTheme.colorScheme.error
-        strengthScore <= 4 -> "Good" to WarningOrange
-        else -> "Strong" to SuccessGreen
+        strengthScore <= 2 -> stringResource(R.string.strength_weak) to MaterialTheme.colorScheme.error
+        strengthScore <= 4 -> stringResource(R.string.strength_good) to WarningOrange
+        else -> stringResource(R.string.strength_strong) to SuccessGreen
     }
 
     // Clear errors when typing
@@ -95,7 +96,10 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_medium),
+                vertical = dimensionResource(R.dimen.padding_small)
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Back Navigation Arrow
@@ -106,7 +110,7 @@ fun RegisterScreen(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back_button_desc),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -115,12 +119,12 @@ fun RegisterScreen(
         Image(
             painter = painterResource(id = R.drawable.university_logo),
             contentDescription = stringResource(R.string.logo_description),
-            modifier = Modifier.size(60.dp)
+            modifier = Modifier.size(dimensionResource(R.dimen.logo_size_register))
         )
 
         Text(
             text = stringResource(R.string.register_title),
-            fontSize = 24.sp,
+            fontSize = dimensionResource(R.dimen.font_size_h3).value.sp,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary
         )
@@ -128,15 +132,15 @@ fun RegisterScreen(
         Text(
             text = stringResource(R.string.register_subtitle),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            fontSize = 14.sp,
+            fontSize = dimensionResource(R.dimen.font_size_medium).value.sp,
             fontWeight = FontWeight.Medium
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
         ) {
             StandardFormInput(
                 value = regNo,
@@ -172,15 +176,15 @@ fun RegisterScreen(
                     label = { Text(stringResource(R.string.label_course)) },
                     placeholder = { Text(stringResource(R.string.placeholder_course)) },
                     readOnly = true,
-                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(24.dp)) },
+                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(dimensionResource(R.dimen.dropdown_arrow_size))) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    shape = RoundedCornerShape(12.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
+                    textStyle = LocalTextStyle.current.copy(fontSize = dimensionResource(R.dimen.font_size_large).value.sp)
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     courses.forEach { selection ->
                         DropdownMenuItem(
-                            text = { Text(selection, fontSize = 16.sp) },
+                            text = { Text(selection, fontSize = dimensionResource(R.dimen.font_size_large).value.sp) },
                             onClick = { 
                                 course = selection
                                 expanded = false
@@ -205,7 +209,7 @@ fun RegisterScreen(
                             imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                             contentDescription = null,
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(dimensionResource(R.dimen.dropdown_arrow_size))
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onPress = {
@@ -222,9 +226,9 @@ fun RegisterScreen(
                     }
                 )
                 if (password.isNotEmpty()) {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
-                        Text("Strength: ", fontSize = 12.sp, color = Color.Gray)
-                        Text(strengthText, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = strengthColor)
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_extra_small))) {
+                        Text(stringResource(R.string.strength_label), fontSize = dimensionResource(R.dimen.font_size_small).value.sp, color = Color.Gray)
+                        Text(strengthText, fontSize = dimensionResource(R.dimen.font_size_small).value.sp, fontWeight = FontWeight.Bold, color = strengthColor)
                     }
                 }
             }
@@ -241,7 +245,7 @@ fun RegisterScreen(
                         imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(dimensionResource(R.dimen.dropdown_arrow_size))
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = {
@@ -259,13 +263,13 @@ fun RegisterScreen(
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = dimensionResource(R.dimen.padding_extra_small))) {
             Checkbox(
                 checked = termsAgreed, 
                 onCheckedChange = { termsAgreed = it; onFieldChange() },
                 colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
             )
-            Text("I agree to the terms and conditions", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.agree_terms), fontSize = dimensionResource(R.dimen.font_size_medium).value.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onBackground)
         }
 
         // Error display
@@ -274,9 +278,9 @@ fun RegisterScreen(
             Text(
                 text = errorToDisplay,
                 color = MaterialTheme.colorScheme.error,
-                fontSize = 12.sp,
+                fontSize = dimensionResource(R.dimen.font_size_small).value.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
             )
         }
 
@@ -285,19 +289,19 @@ fun RegisterScreen(
             onClick = {
                 when {
                     regNo.isEmpty() || fullName.isEmpty() || email.isEmpty() || course.isEmpty() || password.isEmpty() -> {
-                        validationError = "Please fill in all fields"
+                        validationError = context.getString(R.string.error_fill_all)
                     }
                     !email.contains("@") -> {
-                        validationError = "Please enter a valid email"
+                        validationError = context.getString(R.string.error_invalid_email)
                     }
                     !termsAgreed -> {
-                        validationError = "You must agree to the terms"
+                        validationError = context.getString(R.string.error_agree_terms)
                     }
                     password != confirmPassword -> {
-                        validationError = "Passwords do not match"
+                        validationError = context.getString(R.string.error_pass_mismatch)
                     }
                     strengthScore < 5 -> {
-                        validationError = "Password does not meet complexity requirements"
+                        validationError = context.getString(R.string.error_pass_weak)
                     }
                     else -> {
                         viewModel.registerUser(
@@ -312,15 +316,15 @@ fun RegisterScreen(
                     }
                 }
             },
-            modifier = Modifier.height(56.dp),
+            modifier = Modifier.height(dimensionResource(R.dimen.button_height)),
             enabled = authState !is AuthResult.Loading && termsAgreed
         )
 
         val footerText = buildAnnotatedString {
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), fontSize = 14.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)) { append(stringResource(R.string.btn_login)) }
+            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), fontSize = dimensionResource(R.dimen.font_size_medium).value.sp)) { append(stringResource(R.string.footer_have_account) + " ") }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, fontSize = dimensionResource(R.dimen.font_size_medium).value.sp)) { append(stringResource(R.string.btn_login)) }
         }
-        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = 8.dp))
+        Text(footerText, modifier = Modifier.clickable { navController.navigate("login") }.padding(top = dimensionResource(R.dimen.padding_small)))
     }
 }
 
@@ -341,11 +345,11 @@ private fun StandardFormInput(
         label = { Text(stringResource(labelRes)) },
         placeholder = placeholderRes?.let { { Text(stringResource(it)) } },
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
         visualTransformation = visualTransformation,
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        textStyle = LocalTextStyle.current.copy(fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface),
+        textStyle = LocalTextStyle.current.copy(fontSize = dimensionResource(R.dimen.font_size_large).value.sp, color = MaterialTheme.colorScheme.onSurface),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,

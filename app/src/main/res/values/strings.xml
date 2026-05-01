@@ -54,5 +54,57 @@
     <string name="agree_terms">I agree to the Terms &amp; Conditions</string>
     <string name="footer_have_account">Already have an account?</string>
     <string name="btn_sign_up">Sign Up</string>
+    <string name="back_button_desc">Back</string>
+    <string name="password_placeholder">********</string>
+    <string name="error_fill_all">Please fill in all fields</string>
+    <string name="error_invalid_email">Please enter a valid email</string>
+    <string name="error_agree_terms">You must agree to the terms</string>
+    <string name="error_pass_mismatch">Passwords do not match</string>
+    <string name="error_pass_weak">Password does not meet complexity requirements</string>
+    <string name="strength_label">Strength: </string>
+    <string name="strength_weak">Weak</string>
+    <string name="strength_good">Good</string>
+    <string name="strength_strong">Strong</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_picture_desc">Profile Picture</string>
+    <string name="label_year_of_study">Year of Study</string>
+    <string name="label_year_format">Year %1$s</string>
+    <string name="label_campus">Campus</string>
+    <string name="label_phone">Phone</string>
+    <string name="label_voting_status">Voting Status</string>
+    <string name="status_voted">Voted</string>
+    <string name="status_not_voted">Not Voted</string>
+    <string name="text_not_set">Not set</string>
+    <string name="btn_edit_profile">Edit Profile</string>
+    <string name="btn_logout">Logout</string>
+    <string name="default_user_name">Grace</string>
+    <string name="default_reg_no">23/2/314/D/001</string>
+    <string name="default_course">B.IT</string>
+    <string name="default_campus">Kampala Campus</string>
+
+
+    <!-- Home Screen -->
+    <string name="home_greeting">Hello, %1$s 👋</string>
+    <string name="home_ready_question">Ready to make a difference today?</string>
+    <string name="home_election_banner_title">NDEJJE UNIVERSITY</string>
+    <string name="home_election_banner_subtitle1">STUDENT LEADERSHIP</string>
+    <string name="home_election_banner_subtitle2">ELECTIONS 2026</string>
+    <string name="home_election_banner_motto">Your Vote Shapes Our Tomorrow</string>
+    <string name="home_quick_actions_title">Quick Actions</string>
+    <string name="home_action_vote_title">Vote</string>
+    <string name="home_action_vote_desc">Cast your Vote</string>
+    <string name="home_action_results_title">Results</string>
+    <string name="home_action_results_desc">view live results</string>
+    <string name="home_action_profile_title">Profile</string>
+    <string name="home_action_profile_desc">My information</string>
+    <string name="home_election_status_title">Election Status</string>
+    <string name="home_election_active">Voting is Currently Active</string>
+    <string name="home_election_ends_in">Ends in: %1$s</string>
+    <string name="home_total_votes">Total Votes: %1$s</string>
+    <string name="home_last_updated">Last updated: %1$s</string>
+    <string name="home_election_ended">Election Ended</string>
+    <string name="home_time_left_format">%1$d days and %2$d hours</string>
+    <string name="notifications_title">Notifications</string>
 
 </resources>
