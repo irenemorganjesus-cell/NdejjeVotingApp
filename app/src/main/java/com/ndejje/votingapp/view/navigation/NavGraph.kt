@@ -35,6 +35,14 @@ fun VotingNavGraph() {
         factory = CandidateViewModelFactory(candidateRepository, userRepository)
     )
 
+    // Sync AuthViewModel user state after voting
+    val userByAuth by authViewModel.currentUser.collectAsState()
+    LaunchedEffect(candidateViewModel.lastVoteTime.collectAsState().value) {
+        userByAuth?.registrationNumber?.let {
+            authViewModel.refreshUser(it)
+        }
+    }
+
     // 3. SEED DATA LOGIC
     LaunchedEffect(Unit) {
         val sampleCandidates = listOf(
@@ -95,6 +103,10 @@ fun VotingNavGraph() {
         composable("profile") {
             val user by authViewModel.currentUser.collectAsState()
             ProfileScreen(navController, user)
+        }
+        composable("edit_profile") {
+            val user by authViewModel.currentUser.collectAsState()
+            EditProfileScreen(navController, authViewModel, user)
         }
         composable("vote_success") {
             VoteSuccessScreen(navController)

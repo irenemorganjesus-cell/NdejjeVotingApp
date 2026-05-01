@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 // 1. Updated entities list and version
 @Database(
     entities = [UserEntity::class, CandidateEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

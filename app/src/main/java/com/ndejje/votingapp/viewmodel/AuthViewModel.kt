@@ -50,6 +50,20 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
     fun resetState() {
         _authState.value = AuthResult.Idle
     }
+
+    fun updateUser(user: UserEntity) {
+        viewModelScope.launch {
+            repository.updateUser(user)
+            _currentUser.value = user
+        }
+    }
+
+    fun refreshUser(regNo: String) {
+        viewModelScope.launch {
+            val user = repository.login(regNo)
+            _currentUser.value = user
+        }
+    }
 }
 
 // A sealed class to represent different UI states cleanly

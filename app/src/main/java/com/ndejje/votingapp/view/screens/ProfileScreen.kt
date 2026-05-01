@@ -104,7 +104,7 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
 
             // Action Buttons
             OutlinedButton(
-                onClick = { /* TODO: Implement Edit Profile */ },
+                onClick = { navController.navigate("edit_profile") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)

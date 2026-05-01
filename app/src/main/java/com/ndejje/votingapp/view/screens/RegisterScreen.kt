@@ -48,6 +48,7 @@ fun RegisterScreen(
     var yearOfStudy by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var campus by remember { mutableStateOf("Main Campus") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -58,8 +59,12 @@ fun RegisterScreen(
     val scrollState = rememberScrollState()
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
     val years = listOf("1", "2", "3", "4")
+    val campuses = listOf("Main Campus", "Kampala Campus")
     var courseExpanded by remember { mutableStateOf(false) }
     var yearExpanded by remember { mutableStateOf(false) }
+    var campusExpanded by remember { mutableStateOf(false) }
+    
+    // ... rest of logic stays same ...
 
     // Handle Navigation Side Effects - Now goes straight to Home
     LaunchedEffect(authState) {
@@ -187,6 +192,39 @@ fun RegisterScreen(
                 }
             }
 
+            // Campus Dropdown
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Campus",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.DarkGray
+                )
+                ExposedDropdownMenuBox(
+                    expanded = campusExpanded,
+                    onExpandedChange = { campusExpanded = !campusExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = campus,
+                        onValueChange = {},
+                        placeholder = { Text("Select Campus") },
+                        readOnly = true,
+                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(32.dp)) },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        shape = RoundedCornerShape(12.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+                    )
+                    ExposedDropdownMenu(expanded = campusExpanded, onDismissRequest = { campusExpanded = false }) {
+                        campuses.forEach { selection ->
+                            DropdownMenuItem(
+                                text = { Text(selection, fontSize = 18.sp) },
+                                onClick = { campus = selection; campusExpanded = false }
+                            )
+                        }
+                    }
+                }
+            }
+
             StandardFormInput(
                 value = email,
                 onValueChange = { email = it },
@@ -254,6 +292,7 @@ fun RegisterScreen(
                             yearOfStudy = yearOfStudy,
                             phoneNumber = phoneNumber,
                             email = email,
+                            campus = campus,
                             password = password
                         )
                     )

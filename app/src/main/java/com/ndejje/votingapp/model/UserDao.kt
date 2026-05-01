@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface UserDao {
@@ -16,4 +17,7 @@ interface UserDao {
 
     @Query("UPDATE users SET hasVoted = 1 WHERE registrationNumber = :regNo")
     suspend fun markUserAsVoted(regNo: String)
+
+    @Update
+    suspend fun updateUser(user: UserEntity)
 }
