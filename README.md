@@ -65,9 +65,9 @@ We have implemented a multi-layered QA framework to ensure election integrity:
 
 ## 👥 Contributors
 
-- **Lead Developer and Project Cordinator**: [Ssenono Francis Xavier]
-- **Git and Quality Assurance Manager**: [Namanda Irene]
-- **UI/UX Designer**: [Sharifah]
+- **Lead Developer and Project Cordinator**: [Ssenono Francis Xavier] (https://github.com/SsenonoFrancisXavier)
+- **Git and Quality Assurance Manager**: [Namanda Irene] (https://github.com/irenemorganjesus-cell)
+- **UI/UX Designer**: [Sharifah] (https://github.com/Sharifah-Abdullah)
 - **Testing and Quality Assurance Engineer**: [Muyanja Muhammad](https://github.com/muyanjamuhammad5)
 - **Documentation and Research Lead**: [Aksam Kalungi](mailto:aksamkalungi250@gmail.com)
 
