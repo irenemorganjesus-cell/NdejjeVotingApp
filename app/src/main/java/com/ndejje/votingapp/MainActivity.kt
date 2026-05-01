@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import com.ndejje.votingapp.navigation.VotingNavGraph
+import com.ndejje.votingapp.view.navigation.VotingNavGraph
 import com.ndejje.votingapp.ui.theme.NdejjeVotingAppTheme
 
 class MainActivity : ComponentActivity() {

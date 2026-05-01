@@ -11,4 +11,4 @@ val White = Color(0xFFFFFFFF)
 val LightGray = Color(0xFFF5F5F5)     // Good for background of screens
 val DarkGray = Color(0xFF333333)
 
-val NdejjeDarkBlue = Color(0xFF001A33) // A deep, professional midnight blue// Good for text
+val NdejjeDarkBlue = Color(0xFF001F3F)

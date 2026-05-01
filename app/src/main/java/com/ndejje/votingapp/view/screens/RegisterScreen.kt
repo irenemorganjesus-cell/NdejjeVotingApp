@@ -46,6 +46,7 @@ fun RegisterScreen(
 ) {
     var regNo by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var course by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -137,6 +138,14 @@ fun RegisterScreen(
                 onValueChange = { fullName = it; onFieldChange() },
                 labelRes = R.string.label_full_name,
                 placeholderRes = R.string.placeholder_full_name
+            )
+
+            StandardFormInput(
+                value = email,
+                onValueChange = { email = it; onFieldChange() },
+                labelRes = R.string.label_email,
+                placeholderRes = R.string.placeholder_email,
+                keyboardType = KeyboardType.Email
             )
 
             // Course Dropdown
@@ -262,8 +271,11 @@ fun RegisterScreen(
         Button(
             onClick = {
                 when {
-                    regNo.isEmpty() || fullName.isEmpty() || course.isEmpty() || password.isEmpty() -> {
+                    regNo.isEmpty() || fullName.isEmpty() || email.isEmpty() || course.isEmpty() || password.isEmpty() -> {
                         validationError = "Please fill in all fields"
+                    }
+                    !email.contains("@") -> {
+                        validationError = "Please enter a valid email"
                     }
                     !termsAgreed -> {
                         validationError = "You must agree to the terms"
@@ -280,6 +292,7 @@ fun RegisterScreen(
                                 registrationNumber = regNo,
                                 fullName = fullName,
                                 course = course,
+                                email = email,
                                 password = password
                             )
                         )

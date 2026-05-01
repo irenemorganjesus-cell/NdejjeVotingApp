@@ -1,4 +1,4 @@
-package com.ndejje.votingapp.navigation
+package com.ndejje.votingapp.view.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
