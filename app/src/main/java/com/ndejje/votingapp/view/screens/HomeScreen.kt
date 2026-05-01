@@ -2,6 +2,7 @@ package com.ndejje.votingapp.view.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +26,12 @@ import kotlinx.coroutines.delay
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(navController: NavController, userName: String, candidateViewModel: com.ndejje.votingapp.viewmodel.CandidateViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    userName: String,
+    candidateViewModel: com.ndejje.votingapp.viewmodel.CandidateViewModel,
+    notificationViewModel: com.ndejje.votingapp.viewmodel.NotificationViewModel
+) {
     // Defined colors based on your branding requirements
     val ndejjeDarkBlue = Color(0xFF001F3F)
     val lightBlueAccent = Color(0xFFE3F2FD)
@@ -33,6 +39,7 @@ fun HomeScreen(navController: NavController, userName: String, candidateViewMode
 
     val totalVotes by candidateViewModel.totalVotes.collectAsState()
     val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
+    val unreadCount by notificationViewModel.unreadCount.collectAsState()
 
     // Countdown logic
     var timeLeft by remember { mutableStateOf("") }
@@ -83,15 +90,33 @@ fun HomeScreen(navController: NavController, userName: String, candidateViewMode
                         fontWeight = FontWeight.Bold,
                         color = ndejjeDarkBlue
                     )
-                    Icon(
-                        Icons.Default.Notifications,
-                        contentDescription = "Notifications",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .background(ndejjeDarkBlue, CircleShape)
-                            .padding(8.dp)
-                            .size(28.dp)
-                    )
+                    Box {
+                        IconButton(
+                            onClick = { 
+                                notificationViewModel.markAllAsRead()
+                                navController.navigate("notifications") 
+                            },
+                            modifier = Modifier
+                                .background(ndejjeDarkBlue, CircleShape)
+                                .size(44.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Notifications,
+                                contentDescription = "Notifications",
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                        if (unreadCount > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .background(Color.Red, CircleShape)
+                                    .align(Alignment.TopEnd)
+                                    .border(2.dp, lightBlueAccent, CircleShape)
+                            )
+                        }
+                    }
                 }
                 Text(
                     text = "Ready to make a difference today?",

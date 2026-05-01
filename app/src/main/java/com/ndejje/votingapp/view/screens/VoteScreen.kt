@@ -32,10 +32,16 @@ import com.ndejje.votingapp.R
 import com.ndejje.votingapp.model.CandidateEntity
 import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.viewmodel.CandidateViewModel
+import com.ndejje.votingapp.viewmodel.NotificationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user: UserEntity?) {
+fun VoteScreen(
+    navController: NavController,
+    viewModel: CandidateViewModel,
+    notificationViewModel: NotificationViewModel,
+    user: UserEntity?
+) {
     val candidates by viewModel.candidates.collectAsState()
     var selectedPosition by remember { mutableStateOf("Guild President") }
     
@@ -85,6 +91,12 @@ fun VoteScreen(navController: NavController, viewModel: CandidateViewModel, user
                 TextButton(onClick = {
                     val ids = selectedCandidates.values.filterNotNull()
                     viewModel.confirmVotes(ids, user?.registrationNumber ?: "") {
+                        // Send success notification
+                        notificationViewModel.addNotification(
+                            title = "Vote Successful",
+                            message = "Your vote has been recorded successfully. Thank you!",
+                            type = "SUCCESS"
+                        )
                         showDialog = false
                         navController.navigate("vote_success")
                     }

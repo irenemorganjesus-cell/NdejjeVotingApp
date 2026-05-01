@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 
 // 1. Updated entities list and version
 @Database(
-    entities = [UserEntity::class, CandidateEntity::class],
-    version = 4,
+    entities = [UserEntity::class, CandidateEntity::class, NotificationEntity::class],
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -16,6 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
     // 2. Added the new DAO
     abstract fun userDao(): UserDao
     abstract fun candidateDao(): CandidateDao
+    abstract fun notificationDao(): NotificationDao
 
     companion object {
         @Volatile
