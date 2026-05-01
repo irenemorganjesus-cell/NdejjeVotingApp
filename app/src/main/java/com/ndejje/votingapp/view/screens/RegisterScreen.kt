@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -44,6 +46,31 @@ import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.ui.theme.NdejjeDarkBlue
 import com.ndejje.votingapp.viewmodel.AuthViewModel
 import com.ndejje.votingapp.viewmodel.AuthResult
+
+enum class PasswordStrength(val label: String, val color: Color) {
+    NONE("", Color.Transparent),
+    WEAK("Weak", Color.Red),
+    GOOD("Good", Color(0xFFFFA500)),
+    STRONG("Strong", Color(0xFF2E7D32))
+}
+
+fun calculatePasswordStrength(password: String): PasswordStrength {
+    if (password.isEmpty()) return PasswordStrength.NONE
+    if (password.length < 8) return PasswordStrength.WEAK
+    
+    val hasUpper = password.any { it.isUpperCase() }
+    val hasLower = password.any { it.isLowerCase() }
+    val hasDigit = password.any { it.isDigit() }
+    val hasSpecial = password.any { !it.isLetterOrDigit() }
+    
+    val typesCount = listOf(hasUpper, hasLower, hasDigit, hasSpecial).count { it }
+    
+    return when {
+        typesCount == 4 -> PasswordStrength.STRONG
+        typesCount >= 3 -> PasswordStrength.GOOD
+        else -> PasswordStrength.WEAK
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,10 +106,8 @@ fun RegisterScreen(
     ) { uri ->
         profilePictureUri = uri?.toString()
     }
-    
-    // ... rest of logic stays same ...
 
-    // Handle Navigation Side Effects - Now goes straight to Home
+    // Handle Navigation Side Effects
     LaunchedEffect(authState) {
         if (authState is AuthResult.Success) {
             navController.navigate("home") {
@@ -110,7 +135,7 @@ fun RegisterScreen(
 
         Text(
             text = stringResource(R.string.register_title),
-            fontSize = 32.sp, // Made bigger
+            fontSize = 32.sp,
             fontWeight = FontWeight.Black,
             color = NdejjeDarkBlue
         )
@@ -276,7 +301,7 @@ fun RegisterScreen(
             StandardFormInput(
                 value = email,
                 onValueChange = { email = it },
-                labelRes = R.string.app_name, // Placeholder for label as I don't want to edit strings.xml right now if not needed, but better use literal
+                labelRes = R.string.app_name,
                 placeholderRes = null,
                 keyboardType = KeyboardType.Email,
                 customLabel = "University Email"
@@ -299,8 +324,46 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Password,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null, modifier = Modifier.size(28.dp))
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        passwordVisible = true
+                                        try {
+                                            awaitRelease()
+                                        } finally {
+                                            passwordVisible = false
+                                        }
+                                    }
+                                )
+                            }
+                    )
+                },
+                bottomContent = {
+                    val strength = calculatePasswordStrength(password)
+                    if (strength != PasswordStrength.NONE) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(4.dp)
+                                    .background(strength.color, RoundedCornerShape(2.dp))
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Strength: ${strength.label}",
+                                fontSize = 12.sp,
+                                color = strength.color,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             )
@@ -313,8 +376,34 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Password,
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                        Icon(if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff, null, modifier = Modifier.size(28.dp))
+                    Icon(
+                        imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        confirmPasswordVisible = true
+                                        try {
+                                            awaitRelease()
+                                        } finally {
+                                            confirmPasswordVisible = false
+                                        }
+                                    }
+                                )
+                            }
+                    )
+                },
+                bottomContent = {
+                    if (confirmPassword.isNotEmpty() && password != confirmPassword) {
+                        Text(
+                            text = "Passwords do not match",
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
                     }
                 }
             )
@@ -378,7 +467,8 @@ private fun StandardFormInput(
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
-    customLabel: String? = null
+    customLabel: String? = null,
+    bottomContent: @Composable (() -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -399,5 +489,6 @@ private fun StandardFormInput(
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
         )
+        bottomContent?.invoke()
     }
 }
