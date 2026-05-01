@@ -22,7 +22,8 @@ A modern, secure, and inclusive mobile voting application designed specifically 
     - **Unit Testing**: MockK & Turbine
     - **UI Testing**: ComposeTestRule
     - **Integration Testing**: Room In-Memory Database tests
-      ###📊 Test Summary (QA Report)
+
+Test Summary (QA Report)
 
 As the Testing and QA Engineer (Muyanja), I have executed a comprehensive test suite to ensure the application's reliability and integrity.
 
