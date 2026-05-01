@@ -45,6 +45,9 @@ fun RegisterScreen(
     var regNo by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
     var course by remember { mutableStateOf("") }
+    var yearOfStudy by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -54,7 +57,9 @@ fun RegisterScreen(
     val authState by viewModel.authState.collectAsState()
     val scrollState = rememberScrollState()
     val courses = listOf("B.IT", "B.Education", "B.Law", "B.Engineering", "B.Business Administration")
-    var expanded by remember { mutableStateOf(false) }
+    val years = listOf("1", "2", "3", "4")
+    var courseExpanded by remember { mutableStateOf(false) }
+    var yearExpanded by remember { mutableStateOf(false) }
 
     // Handle Navigation Side Effects - Now goes straight to Home
     LaunchedEffect(authState) {
@@ -125,8 +130,8 @@ fun RegisterScreen(
                     color = Color.DarkGray
                 )
                 ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded }
+                    expanded = courseExpanded,
+                    onExpandedChange = { courseExpanded = !courseExpanded }
                 ) {
                     OutlinedTextField(
                         value = course,
@@ -138,16 +143,67 @@ fun RegisterScreen(
                         shape = RoundedCornerShape(12.dp),
                         textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
                     )
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    ExposedDropdownMenu(expanded = courseExpanded, onDismissRequest = { courseExpanded = false }) {
                         courses.forEach { selection ->
                             DropdownMenuItem(
                                 text = { Text(selection, fontSize = 18.sp) },
-                                onClick = { course = selection; expanded = false }
+                                onClick = { course = selection; courseExpanded = false }
                             )
                         }
                     }
                 }
             }
+
+            // Year of Study Dropdown
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Year of Study",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.DarkGray
+                )
+                ExposedDropdownMenuBox(
+                    expanded = yearExpanded,
+                    onExpandedChange = { yearExpanded = !yearExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = yearOfStudy,
+                        onValueChange = {},
+                        placeholder = { Text("Select Year") },
+                        readOnly = true,
+                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, modifier = Modifier.size(32.dp)) },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        shape = RoundedCornerShape(12.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+                    )
+                    ExposedDropdownMenu(expanded = yearExpanded, onDismissRequest = { yearExpanded = false }) {
+                        years.forEach { selection ->
+                            DropdownMenuItem(
+                                text = { Text(selection, fontSize = 18.sp) },
+                                onClick = { yearOfStudy = selection; yearExpanded = false }
+                            )
+                        }
+                    }
+                }
+            }
+
+            StandardFormInput(
+                value = email,
+                onValueChange = { email = it },
+                labelRes = R.string.app_name, // Placeholder for label as I don't want to edit strings.xml right now if not needed, but better use literal
+                placeholderRes = null,
+                keyboardType = KeyboardType.Email,
+                customLabel = "University Email"
+            )
+
+            StandardFormInput(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                labelRes = R.string.app_name,
+                placeholderRes = null,
+                keyboardType = KeyboardType.Phone,
+                customLabel = "Phone Number"
+            )
 
             StandardFormInput(
                 value = password,
@@ -190,7 +246,17 @@ fun RegisterScreen(
         Button(
             onClick = {
                 if (termsAgreed && password == confirmPassword && regNo.isNotEmpty()) {
-                    viewModel.registerUser(UserEntity(regNo, fullName, course, password))
+                    viewModel.registerUser(
+                        UserEntity(
+                            registrationNumber = regNo,
+                            fullName = fullName,
+                            course = course,
+                            yearOfStudy = yearOfStudy,
+                            phoneNumber = phoneNumber,
+                            email = email,
+                            password = password
+                        )
+                    )
                 }
             },
             modifier = Modifier.fillMaxWidth().height(64.dp),
@@ -223,10 +289,16 @@ private fun StandardFormInput(
     placeholderRes: Int? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    customLabel: String? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(labelRes), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.DarkGray)
+        Text(
+            text = customLabel ?: stringResource(labelRes),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = Color.DarkGray
+        )
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,

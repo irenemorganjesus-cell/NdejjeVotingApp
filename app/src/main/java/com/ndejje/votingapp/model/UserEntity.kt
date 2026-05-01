@@ -9,6 +9,10 @@ data class UserEntity(
     val registrationNumber: String, // e.g. 23/2/314/D/001
     val fullName: String,
     val course: String,
+    val yearOfStudy: String = "1",
+    val phoneNumber: String = "",
+    val email: String = "",
+    val campus: String = "Kampala Campus",
     val password: String,
     val hasVoted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
