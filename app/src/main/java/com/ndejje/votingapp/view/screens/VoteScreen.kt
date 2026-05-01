@@ -51,6 +51,7 @@ fun VoteScreen(
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     val ndejjeDarkBlue = Color(0xFF001F3F)
+    val lightBlueBg = Color(0xFFE3F2FD)
 
     val positions = listOf("Guild President", "Guild Speaker", "GRC")
 
@@ -66,7 +67,7 @@ fun VoteScreen(
 
     if (user?.hasVoted == true) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = ndejjeDarkBlue)
         }
         return
     }
@@ -81,9 +82,7 @@ fun VoteScreen(
                     Text("Are you sure you want to submit your choices for all positions?")
                     Spacer(modifier = Modifier.height(8.dp))
                     positions.forEach { pos ->
-                        val candId = selectedCandidates[pos]
-                        // We could fetch names here, but for simplicity in the dialog:
-                        Text("• $pos selected", fontWeight = FontWeight.Medium)
+                        Text("• $pos section completed", fontWeight = FontWeight.Medium)
                     }
                 }
             },
@@ -91,7 +90,6 @@ fun VoteScreen(
                 TextButton(onClick = {
                     val ids = selectedCandidates.values.filterNotNull()
                     viewModel.confirmVotes(ids, user?.registrationNumber ?: "") {
-                        // Send success notification
                         notificationViewModel.addNotification(
                             title = "Vote Successful",
                             message = "Your vote has been recorded successfully. Thank you!",
@@ -148,12 +146,12 @@ fun VoteScreen(
                             viewModel.fetchCandidates(pos)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSelected) ndejjeDarkBlue else if (isCompleted) Color(0xFFE8F5E9) else Color(0xFFF1F1F1),
-                            contentColor = if (isSelected) Color.White else if (isCompleted) Color(0xFF2E7D32) else Color.Black
+                            containerColor = if (isSelected) ndejjeDarkBlue else if (isCompleted) lightBlueBg else Color(0xFFF1F1F1),
+                            contentColor = if (isSelected) Color.White else if (isCompleted) ndejjeDarkBlue else Color.Black
                         ),
                         modifier = Modifier.weight(1f).height(48.dp),
                         shape = RoundedCornerShape(12.dp),
-                        border = if (isCompleted && !isSelected) BorderStroke(1.dp, Color(0xFF2E7D32)) else null
+                        border = if (isCompleted && !isSelected) BorderStroke(1.dp, ndejjeDarkBlue) else null
                     ) {
                         Text(pos, fontSize = 10.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
@@ -218,7 +216,7 @@ fun VoteScreen(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 13.sp,
-                color = if (allSelected) Color(0xFF2E7D32) else Color.Gray,
+                color = if (allSelected) ndejjeDarkBlue else Color.Gray,
                 fontWeight = if (allSelected) FontWeight.Bold else FontWeight.Normal
             )
         }

@@ -2,7 +2,6 @@ package com.ndejje.votingapp.view.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -26,22 +25,13 @@ import kotlinx.coroutines.delay
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(
-    navController: NavController,
-    userName: String,
-    candidateViewModel: com.ndejje.votingapp.viewmodel.CandidateViewModel,
-    notificationViewModel: com.ndejje.votingapp.viewmodel.NotificationViewModel
-) {
+fun HomeScreen(navController: NavController, userName: String) {
     // Defined colors based on your branding requirements
     val ndejjeDarkBlue = Color(0xFF001F3F)
     val lightBlueAccent = Color(0xFFE3F2FD)
     val pearlWhite = Color(0xFFF5F5F5)
 
-    val totalVotes by candidateViewModel.totalVotes.collectAsState()
-    val lastVoteTime by candidateViewModel.lastVoteTime.collectAsState()
-    val unreadCount by notificationViewModel.unreadCount.collectAsState()
-
-    // Countdown logic
+    // Countdown logic: Target is 7 days from now
     var timeLeft by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         val targetTime = Calendar.getInstance().apply {
@@ -86,41 +76,23 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "Hello, $userName 👋",
-                        fontSize = 28.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         color = ndejjeDarkBlue
                     )
-                    Box {
-                        IconButton(
-                            onClick = { 
-                                notificationViewModel.markAllAsRead()
-                                navController.navigate("notifications") 
-                            },
-                            modifier = Modifier
-                                .background(ndejjeDarkBlue, CircleShape)
-                                .size(44.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Notifications,
-                                contentDescription = "Notifications",
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-                        if (unreadCount > 0) {
-                            Box(
-                                modifier = Modifier
-                                    .size(12.dp)
-                                    .background(Color.Red, CircleShape)
-                                    .align(Alignment.TopEnd)
-                                    .border(2.dp, lightBlueAccent, CircleShape)
-                            )
-                        }
-                    }
+                    Icon(
+                        Icons.Default.Notifications,
+                        contentDescription = "Notifications",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .background(ndejjeDarkBlue, CircleShape)
+                            .padding(8.dp)
+                            .size(28.dp)
+                    )
                 }
                 Text(
                     text = "Ready to make a difference today?",
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = Color.DarkGray,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 4.dp)
@@ -133,20 +105,20 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = ndejjeDarkBlue),
-                    elevation = CardDefaults.cardElevation(8.dp)
+                    elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("NDEJJE UNIVERSITY", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-                        Text("STUDENT LEADERSHIP", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                        Text("ELECTIONS 2026", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        Text("NDEJJE UNIVERSITY", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Text("STUDENT LEADERSHIP", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        Text("ELECTIONS 2026", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             "Your Vote Shapes Our Tomorrow",
                             color = Color(0xFFBBDEFB),
-                            fontSize = 14.sp,
+                            fontSize = 13.sp,
                             fontStyle = FontStyle.Italic,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center
@@ -160,7 +132,7 @@ fun HomeScreen(
                 Text(
                     "Quick Actions",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     color = ndejjeDarkBlue
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -179,11 +151,11 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Election Status Section
+                // Election Status Box
                 Text(
                     text = "Election Status",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -192,12 +164,12 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = pearlWhite),
-                    border = BorderStroke(1.dp, Color.LightGray)
+                    border = BorderStroke(1.dp, ndejjeDarkBlue.copy(alpha = 0.1f))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Voting is Currently Active",
-                            color = Color.Blue,
+                            color = ndejjeDarkBlue, // Updated to Dark Blue as requested
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp
                         )
@@ -210,25 +182,6 @@ fun HomeScreen(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = "Total Votes: $totalVotes",
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 22.sp,
-                    color = ndejjeDarkBlue
-                )
-
-                Text(
-                    text = "Last updated: $lastVoteTime",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
         }
     }
@@ -238,7 +191,7 @@ fun HomeScreen(
 fun QuickActionCard(title: String, subtitle: String, icon: ImageVector, modifier: Modifier, darkBlue: Color, onClick: () -> Unit) {
     Card(
         modifier = modifier
-            .height(110.dp)
+            .height(115.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
         shape = RoundedCornerShape(12.dp),
@@ -260,15 +213,15 @@ fun QuickActionCard(title: String, subtitle: String, icon: ImageVector, modifier
             Text(
                 title,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = Color.Black
             )
             Text(
                 subtitle,
-                fontSize = 10.sp,
+                fontSize = 11.sp,
                 textAlign = TextAlign.Center,
                 color = Color.Gray.copy(alpha = 0.8f),
-                lineHeight = 12.sp
+                lineHeight = 13.sp
             )
         }
     }

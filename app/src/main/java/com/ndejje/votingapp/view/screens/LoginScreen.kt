@@ -69,7 +69,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             value = regNo,
             onValueChange = { 
                 regNo = it
-                viewModel.resetState()
+                viewModel.resetState() // Clear error on type
             },
             label = { Text(stringResource(R.string.label_reg_no)) },
             modifier = Modifier.fillMaxWidth(),
@@ -82,7 +82,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             value = password,
             onValueChange = { 
                 password = it
-                viewModel.resetState()
+                viewModel.resetState() // Clear error on type
             },
             label = { Text(stringResource(R.string.label_password)) },
             placeholder = { Text("********") },
@@ -126,6 +126,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             else Text(stringResource(R.string.btn_login))
         }
 
+        // Visible rectangular Register button
         OutlinedButton(
             onClick = { 
                 viewModel.resetState()
@@ -133,9 +134,9 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp).height(56.dp),
             shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
-            border = BorderStroke(1.dp, Color.Gray)
+            border = BorderStroke(1.dp, NdejjeDarkBlue)
         ) {
-            Text(stringResource(R.string.btn_register), color = Color.Gray, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.btn_register), color = NdejjeDarkBlue, fontWeight = FontWeight.Bold)
         }
     }
 }
