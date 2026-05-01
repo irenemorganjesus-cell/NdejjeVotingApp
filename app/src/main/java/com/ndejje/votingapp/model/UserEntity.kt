@@ -13,6 +13,7 @@ data class UserEntity(
     val phoneNumber: String = "",
     val email: String = "",
     val campus: String = "Kampala Campus",
+    val profilePictureUri: String? = null,
     val password: String,
     val hasVoted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()

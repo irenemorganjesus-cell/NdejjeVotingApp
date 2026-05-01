@@ -20,6 +20,10 @@ import androidx.navigation.NavController
 import com.ndejje.votingapp.model.UserEntity
 import com.ndejje.votingapp.view.components.BottomNavigationBar
 
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
+
 @Composable
 fun ProfileScreen(navController: NavController, user: UserEntity?) {
     val ndejjeDarkBlue = Color(0xFF001F3F)
@@ -38,18 +42,29 @@ fun ProfileScreen(navController: NavController, user: UserEntity?) {
         ) {
             Spacer(modifier = Modifier.height(30.dp))
 
-            // Profile Icon
-            Surface(
-                modifier = Modifier.size(90.dp),
-                shape = CircleShape,
-                color = ndejjeDarkBlue
+            // Profile Picture Circle
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.padding(18.dp).size(40.dp)
-                )
+                if (user?.profilePictureUri != null) {
+                    AsyncImage(
+                        model = user.profilePictureUri,
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
