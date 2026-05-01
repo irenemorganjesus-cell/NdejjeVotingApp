@@ -1,9 +1,18 @@
 package com.ndejje.votingapp.model
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class CandidateRepository(private val candidateDao: CandidateDao) {
+
+    fun getCandidatesByPositionFlow(position: String): Flow<List<CandidateEntity>> {
+        return candidateDao.getCandidatesByPositionFlow(position)
+    }
+
+    fun getTotalVotesFlow(): Flow<Int?> {
+        return candidateDao.getTotalVotesFlow()
+    }
 
     suspend fun getCandidatesByPosition(position: String): List<CandidateEntity> {
         return withContext(Dispatchers.IO) {
