@@ -116,6 +116,17 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
             Text((authState as AuthResult.Error).message, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
 
+        // Forgot Password Link
+        Text(
+            text = "Forgot Password?",
+            color = NdejjeDarkBlue,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 8.dp)
+                .clickable { navController.navigate("forgot_password") }
+        )
+
         Button(
             onClick = { viewModel.loginUser(regNo, password) },
             modifier = Modifier.fillMaxWidth().padding(top = 24.dp).height(56.dp),

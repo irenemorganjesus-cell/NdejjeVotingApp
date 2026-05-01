@@ -15,6 +15,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE registrationNumber = :regNo LIMIT 1")
     suspend fun loginUser(regNo: String): UserEntity?
 
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    suspend fun getUserByEmail(email: String): UserEntity?
+
     @Query("UPDATE users SET hasVoted = 1 WHERE registrationNumber = :regNo")
     suspend fun markUserAsVoted(regNo: String)
 

@@ -34,7 +34,7 @@ import java.util.*
 @Composable
 fun NotificationScreen(navController: NavController, viewModel: NotificationViewModel) {
     val notifications by viewModel.notifications.collectAsState()
-    val ndejjeDarkGreen = Color(0xFF1B5E20) // Based on the image's dark green header
+    val ndejjeDarkBlue = Color(0xFF001F3F) // Consistent dark blue branding
 
     // Mark all as read when opening the screen
     LaunchedEffect(Unit) {
@@ -71,11 +71,11 @@ fun NotificationScreen(navController: NavController, viewModel: NotificationView
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = ndejjeDarkGreen
+                    containerColor = ndejjeDarkBlue
                 )
             )
         },
-        containerColor = ndejjeDarkGreen
+        containerColor = ndejjeDarkBlue
     ) { padding ->
         Surface(
             modifier = Modifier

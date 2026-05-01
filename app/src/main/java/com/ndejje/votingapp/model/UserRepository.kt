@@ -17,6 +17,12 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
+    suspend fun getUserByEmail(email: String): UserEntity? {
+        return withContext(Dispatchers.IO) {
+            userDao.getUserByEmail(email)
+        }
+    }
+
     suspend fun markUserAsVoted(regNo: String) {
         withContext(Dispatchers.IO) {
             userDao.markUserAsVoted(regNo)

@@ -47,6 +47,19 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
+    fun recoverPassword(email: String) {
+        _authState.value = AuthResult.Loading
+        viewModelScope.launch {
+            val user = repository.getUserByEmail(email)
+            if (user != null) {
+                // In a real app, we'd send an email. For this demo, we'll simulate success.
+                _authState.value = AuthResult.Success("Password sent to ${user.email}")
+            } else {
+                _authState.value = AuthResult.Error("Email not found in our records!")
+            }
+        }
+    }
+
     fun resetState() {
         _authState.value = AuthResult.Idle
     }

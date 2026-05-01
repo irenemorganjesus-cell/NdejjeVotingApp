@@ -121,6 +121,9 @@ fun VotingNavGraph() {
             val user by authViewModel.currentUser.collectAsState()
             EditProfileScreen(navController, authViewModel, user)
         }
+        composable("forgot_password") {
+            ForgotPasswordScreen(navController, authViewModel)
+        }
         composable("vote_success") {
             VoteSuccessScreen(navController)
         }
